@@ -18,16 +18,16 @@ if ( ! defined( 'PF_PLUGIN_FILE' ) ) {
     define( 'PF_PLUGIN_FILE', __FILE__ );
 }
 
-class Turn14_Base {
+class Turn14_For_WooCommerce {
 
-    const VERSION = '2.1.9';
+    const VERSION = '0.1.0';
 	
 
     /**
      * Construct the plugin.
      */
     public function __construct() {
-    
+        add_action( 'plugins_loaded', array( $this, 'init' ) );
     }
 
     /**
@@ -35,10 +35,16 @@ class Turn14_Base {
      */
     public function init() {
 
+        // if (!class_exists('WC_Integration')) {
+        //     return;
+        // }
+
+        //load required classes
+        require_once 'includes/class-turn14-dashboard.php';
+        
+        Turn14_Dashboard::init();
        
     }
-
-    
 }
 
-new Turn14_Base();    //let's go
+new Turn14_For_WooCommerce();    //let's go
