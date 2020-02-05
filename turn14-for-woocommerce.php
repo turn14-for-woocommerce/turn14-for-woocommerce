@@ -40,9 +40,11 @@ class Turn14_For_WooCommerce {
         // }
 
         //load required classes
-        require_once 'includes/class-turn14-dashboard.php';
+        require_once 'includes/class-turn14-admin.php';
+        require_once 'includes/class-turn14-admin-dashboard.php';
+        require_once 'includes/class-turn14-admin-settings.php';
         
-        Turn14_Dashboard::init();
+        Turn14_Admin::init();
        
     }
 }
