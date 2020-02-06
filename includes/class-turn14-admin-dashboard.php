@@ -28,7 +28,7 @@ class Turn14_Admin_Dashboard
     public function render_dashboard()
     {
         Turn14_Admin::load_template('header', array('tabs' => Turn14_Admin::get_tabs()));
-        // Turn14_Admin::load_template('import-all-products');
+        Turn14_Admin::load_template('import-all-products');
         Turn14_Admin::load_template('footer');
     }
 }

@@ -28,7 +28,7 @@ class Turn14_Admin_Settings
     public function render_settings()
     {
         Turn14_Admin::load_template('header', array('tabs' => Turn14_Admin::get_tabs()));
-        // Turn14_Admin::load_template('api-settings-group');
+        Turn14_Admin::load_template('api-settings-group');
         Turn14_Admin::load_template('footer');
     }
 }
