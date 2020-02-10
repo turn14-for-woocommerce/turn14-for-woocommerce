@@ -18,6 +18,7 @@ class Turn14_Admin_Dashboard
 
     public function __construct()
     {
+        
     }
 
     public static function view()

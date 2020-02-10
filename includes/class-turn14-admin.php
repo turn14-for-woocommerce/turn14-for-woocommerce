@@ -14,6 +14,10 @@ class Turn14_Admin
         $admin = new self;
         $admin->register_admin();
     }
+
+    public function __construct()
+    {
+    }
     
     /**
      * Register Admin
@@ -21,6 +25,23 @@ class Turn14_Admin
     public function register_admin()
     {
         add_action('admin_menu', array($this, 'register_admin_menu_page'));
+        add_action('admin_init', array($this, 'register_settings'));
+    }
+
+    /**
+     * Register Settings
+     */
+    public function register_settings()
+    {
+        $options = Turn14_Settings::dashboard_settings();
+        foreach ($options as $key=>$value) {
+            // delete_option($key);
+            if (get_option($key) == false) {
+                add_option($key, '');
+                // unregister_setting('turn14_settings', $key,);
+                register_setting('turn14_settings', $key, 'sanitize');
+            }
+        }
     }
 
     /**
@@ -67,5 +88,14 @@ class Turn14_Admin
         if (file_exists($filename)) {
             include($filename);
         }
+    }
+
+    public function sanitize($input)
+    {
+        $new_input = null;
+        if( isset($input))
+            $new_input = sanitize_text_field($input);
+
+        return $new_input;
     }
 }

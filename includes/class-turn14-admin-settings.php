@@ -12,7 +12,6 @@ class Turn14_Admin_Settings
         if (is_null(self::$_instance)) {
             self::$_instance = new self();
         }
-
         return self::$_instance;
     }
 
@@ -27,8 +26,42 @@ class Turn14_Admin_Settings
 
     public function render_settings()
     {
+        self::instance()->add_settings();
         Turn14_Admin::load_template('header', array('tabs' => Turn14_Admin::get_tabs()));
-        Turn14_Admin::load_template('api-settings-group');
+        Turn14_Admin::load_template('api-settings-group', Turn14_Settings::dashboard_settings());
         Turn14_Admin::load_template('footer');
+    }
+
+    public function add_settings()
+    {
+        add_settings_section(
+            'turn14_api_credentials', // ID
+            'API Credentials', // Title
+            array( $this, 'empty_callback' ), // Callback
+            'turn14_dashboard' // Page
+        );
+        
+        foreach (Turn14_Settings::dashboard_settings() as $key=>$value) {
+            $args = array('key'=>$key, 'value'=>$value);
+            add_settings_field(
+                $key, // ID
+                $value, // Title
+                array( $this, 'input_field_callback' ), // Callback
+                'turn14_dashboard', // Page
+                'turn14_api_credentials', // Section
+                $args
+            );
+        }
+    }
+
+    public function empty_callback()
+    {
+        echo '';
+    }
+
+    public function input_field_callback($args)
+    {
+        $value = get_option($args['key']);
+        echo '<input type="text" name="' . $args['key'] . '" id="' . $args['key'] . '" value="' . $value . '" >';
     }
 }
