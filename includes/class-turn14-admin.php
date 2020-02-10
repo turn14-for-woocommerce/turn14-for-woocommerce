@@ -35,12 +35,8 @@ class Turn14_Admin
     {
         $options = Turn14_Settings::dashboard_settings();
         foreach ($options as $key=>$value) {
-            // delete_option($key);
-            if (get_option($key) == false) {
-                add_option($key, '');
-                // unregister_setting('turn14_settings', $key,);
-                register_setting('turn14_settings', $key, 'sanitize');
-            }
+            add_option($key, '');
+            register_setting('turn14_settings', $key, 'sanitize');
         }
     }
 
@@ -93,8 +89,9 @@ class Turn14_Admin
     public function sanitize($input)
     {
         $new_input = null;
-        if( isset($input))
+        if (isset($input)) {
             $new_input = sanitize_text_field($input);
+        }
 
         return $new_input;
     }
