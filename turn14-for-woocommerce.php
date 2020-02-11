@@ -48,6 +48,7 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-turn14-admin-dashboard.php';
         require_once 'includes/class-turn14-admin-settings.php';
         require_once 'includes/class-turn14-settings.php';
+        require_once 'includes/class-turn14-rest-client.php';
         
         Turn14_Admin::init();
     }
