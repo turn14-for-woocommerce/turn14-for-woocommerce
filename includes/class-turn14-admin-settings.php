@@ -3,6 +3,9 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * 
+ */
 class Turn14_Admin_Settings
 {
     public static $_instance;
@@ -19,19 +22,28 @@ class Turn14_Admin_Settings
     {
     }
 
+    /**
+     * 
+     */
     public static function view()
     {
         self::instance()->render_settings();
     }
 
+    /**
+     * 
+     */
     public function render_settings()
     {
         self::instance()->add_settings();
-        Turn14_Admin::load_template('header', array('tabs' => Turn14_Admin::get_tabs()));
-        Turn14_Admin::load_template('api-settings-group', Turn14_Settings::dashboard_settings());
-        Turn14_Admin::load_template('footer');
+        Dashboard_View_Config::load_template('header', array('tabs' => Dashboard_View_Config::dashboard_tabs()));
+        Dashboard_View_Config::load_template('api-settings-group', Dashboard_Settings::dashboard_settings_group());
+        Dashboard_View_Config::load_template('footer');
     }
 
+    /**
+     * 
+     */
     public function add_settings()
     {
         add_settings_section(
@@ -41,7 +53,7 @@ class Turn14_Admin_Settings
             'turn14_dashboard' // Page
         );
         
-        foreach (Turn14_Settings::dashboard_settings() as $key=>$value) {
+        foreach (Dashboard_Settings::dashboard_settings_group() as $key=>$value) {
             $args = array('key'=>$key, 'value'=>$value);
             add_settings_field(
                 $key, // ID
@@ -54,11 +66,17 @@ class Turn14_Admin_Settings
         }
     }
 
+    /**
+     * 
+     */
     public function empty_callback()
     {
         echo '';
     }
 
+    /**
+     * 
+     */
     public function input_field_callback($args)
     {
         $value = get_option($args['key']);

@@ -3,6 +3,9 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * 
+ */
 class Turn14_Admin_Dashboard
 {
     public static $_instance;
@@ -21,15 +24,21 @@ class Turn14_Admin_Dashboard
         
     }
 
+    /**
+     * 
+     */
     public static function view()
     {
         self::instance()->render_dashboard();
     }
 
-    public function render_dashboard()
+    /**
+     * 
+     */
+    private function render_dashboard()
     {
-        Turn14_Admin::load_template('header', array('tabs' => Turn14_Admin::get_tabs()));
-        Turn14_Admin::load_template('import-all-products');
-        Turn14_Admin::load_template('footer');
+        Dashboard_View_Config::load_template('header', array('tabs' => Dashboard_View_Config::dashboard_tabs()));
+        Dashboard_View_Config::load_template('import-all-products');
+        Dashboard_View_Config::load_template('footer');
     }
 }

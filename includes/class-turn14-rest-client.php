@@ -3,6 +3,9 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * 
+ */
 class Turn14_Rest_Client
 {
     public static $_instance;
@@ -28,6 +31,9 @@ class Turn14_Rest_Client
         $this->authenticate();
     }
     
+    /**
+     * 
+     */
     public function authenticate()
     {
         $api_client = get_option(self::API_CLIENT);
