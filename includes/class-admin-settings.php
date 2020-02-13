@@ -4,9 +4,9 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * 
+ *
  */
-class Turn14_Admin_Settings
+class Admin_Settings
 {
     public static $_instance;
 
@@ -23,7 +23,7 @@ class Turn14_Admin_Settings
     }
 
     /**
-     * 
+     *
      */
     public static function view()
     {
@@ -31,7 +31,7 @@ class Turn14_Admin_Settings
     }
 
     /**
-     * 
+     *
      */
     public function render_settings()
     {
@@ -42,7 +42,7 @@ class Turn14_Admin_Settings
     }
 
     /**
-     * 
+     *
      */
     public function add_settings()
     {
@@ -67,7 +67,7 @@ class Turn14_Admin_Settings
     }
 
     /**
-     * 
+     *
      */
     public function empty_callback()
     {
@@ -75,7 +75,7 @@ class Turn14_Admin_Settings
     }
 
     /**
-     * 
+     *
      */
     public function input_field_callback($args)
     {

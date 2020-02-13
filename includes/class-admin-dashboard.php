@@ -6,7 +6,7 @@ if (! defined('ABSPATH')) {
 /**
  * 
  */
-class Turn14_Admin_Dashboard
+class Admin_Dashboard
 {
     public static $_instance;
 
@@ -39,6 +39,10 @@ class Turn14_Admin_Dashboard
     {
         Dashboard_View_Config::load_template('header', array('tabs' => Dashboard_View_Config::dashboard_tabs()));
         Dashboard_View_Config::load_template('import-all-products');
+        $client = new Turn14_Rest_Client();
+        $results = $client->get_items();
+
+        echo $results;
         Dashboard_View_Config::load_template('footer');
     }
 }

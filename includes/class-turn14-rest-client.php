@@ -14,6 +14,7 @@ class Turn14_Rest_Client
     const API_SECRET = 'turn14_api_secret';
     const BASE_URL = 'https://apitest.turn14.com';
     const TOKEN_RESOURCE = '/v1/token';
+    const ITEMS_RESOURCE = '/v1/items?page=';
 
     private $token;
 
@@ -56,5 +57,28 @@ class Turn14_Rest_Client
 
         $response_body = json_decode( $response_body, true);
         $this->$token = $response_body['access_token'];
+    }
+
+    /**
+     * 
+     */
+    public function get_items()
+    {
+        
+        $auth_header = array(
+            'Authorization'=> 'Bearer ' . $this->$token
+        );
+
+        $response_body = wp_remote_retrieve_body(
+            wp_remote_get(
+                self::BASE_URL . '/v1/items?page=1',
+                array(
+                    'headers' => $auth_header
+                )
+            )
+        );
+
+        $response_body = json_decode( $response_body, true);
+        return $response_body;
     }
 }
