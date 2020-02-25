@@ -3,6 +3,9 @@
     <?php
     $base_url = '?page=turn14-dashboard';
     ?>
+    <div style="margin-bottom: 20px;">
+        <img src="https://www.turn14.com/images/header/logo.png"> 
+    </div>
 
     <h2 class="nav-tab-wrapper">
         <?php foreach ($tabs as $tab) : ?>

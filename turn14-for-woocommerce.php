@@ -56,8 +56,14 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-admin-settings.php';
         require_once 'includes/class-admin-controller.php';
         require_once 'includes/class-turn14-rest-client.php';
+        require_once 'includes/interface-import-service.php';
+        require_once 'includes/class-import-service-impl.php';
+        require_once 'includes/class-import-util.php';
+        require_once 'includes/class-import-worker.php';
         
-        $this->$admin = new Admin();
+        
+        
+        $this->admin = new Admin();
     }
 }
 

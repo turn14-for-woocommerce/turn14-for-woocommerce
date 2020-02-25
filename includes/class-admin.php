@@ -15,7 +15,7 @@ class Admin
 
     public function __construct()
     {
-        $this->$controller = new Admin_Controller();
+        $this->controller = new Admin_Controller();
         $this->register_admin();
     }
     
@@ -49,10 +49,14 @@ class Admin
         add_menu_page(self::PAGE_TITLE, self::PANEL_TITLE, 'manage_options', self::SLUG, array($this, 'dashboard_view'));
     }
 
+    /**
+     *
+     */
     public function register_scripts($hook)
     {
         if (strpos($hook, 'turn14-dashboard') !== false) {
             wp_enqueue_script('admin-dashboard', plugins_url('../assets/js/admin-dashboard.js', __FILE__));
+            wp_enqueue_style('admin-dashboard', plugins_url('../assets/css/style.css', __FILE__));
             wp_localize_script('admin-dashboard', 'admin_dashboard', array( 'ajax' => admin_url('admin-ajax.php')));
         }
     }
