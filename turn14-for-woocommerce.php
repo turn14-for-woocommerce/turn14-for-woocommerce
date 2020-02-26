@@ -60,6 +60,7 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-import-service-impl.php';
         require_once 'includes/class-import-util.php';
         require_once 'includes/class-import-worker.php';
+        require_once 'includes/class-turn14-product-query.php';
         
         
         

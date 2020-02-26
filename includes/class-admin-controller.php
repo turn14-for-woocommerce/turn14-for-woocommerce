@@ -31,7 +31,8 @@ class Admin_Controller
         spawn_cron();
         wp_send_json_success(
             array(
-            'msg' => 'Importing all products in the background. This may take a few minutes...')
+            'msg' => 'Importing all products in the background. This may take a few minutes... We will email you when we are finished!'
+            )
         );
     }
 
@@ -56,7 +57,7 @@ class Admin_Controller
         spawn_cron();
         wp_send_json_success(
             array(
-            'msg' => 'Deleting all products in the background')
+            'msg' => 'Deleting all products in the background. This may take a few minutes... We will email you when we are finished!')
         );
     }
 }

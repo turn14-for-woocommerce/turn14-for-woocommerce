@@ -68,7 +68,7 @@ class Import_Util
                     'position' => 1,
                     'is_visible' => 0,
                     'is_variation' => 0,
-                    'is_taxonomy' => 1
+                    'is_taxonomy' => 0
                 ),
             )
         );
@@ -158,10 +158,10 @@ class Import_Util
             update_post_meta($post_id, '_regular_price', $product_prices['Retail']);
             update_post_meta($post_id, '_price', $product_prices['MAP']);
             update_post_meta($post_id, '_sale_price', $product_prices['MAP']);
-        } else if($product_prices['Retail'] != null){
+        } elseif ($product_prices['Retail'] != null) {
             update_post_meta($post_id, '_regular_price', $product_prices['Retail']);
             update_post_meta($post_id, '_price', $product_prices['Retail']);
-        } else if($product_prices['MAP'] != null){
+        } elseif ($product_prices['MAP'] != null) {
             update_post_meta($post_id, '_regular_price', $product_prices['MAP']);
             update_post_meta($post_id, '_price', $product_prices['MAP']);
         }
