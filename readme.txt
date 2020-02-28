@@ -1,4 +1,4 @@
-=== Turn14 Integration for WooCommerce ===
+=== Turn14 for WooCommerce ===
 Contributors: hallsamuel90
 Requires at least: 4.4
 Tested up to: 5.3
