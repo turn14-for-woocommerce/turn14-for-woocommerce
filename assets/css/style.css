@@ -1,0 +1,16 @@
+.button-danger {
+  background: #d9534f !important;
+  border-color: #d9534f !important;
+}
+
+.button-danger:active,
+.button-danger:focus {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 3px #d9534f !important;
+  background: #b14440 !important;
+  border-color: #b14440 !important;
+}
+
+.button-danger:hover {
+  background: #b14440 !important;
+  border-color: #b14440 !important;
+}
