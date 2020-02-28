@@ -1,9 +1,16 @@
 <?php
+/**
+ * Import Service Interface Implementation Class
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
+
 /**
- *
+ * Class Interface Import Service Implementation for Turn14 into WooCommerce
  */
 class Import_Service_Impl implements Import_Service
 {
@@ -11,7 +18,7 @@ class Import_Service_Impl implements Import_Service
     private $turn14_rest_client;
 
     /**
-     *
+     * Default Constructor
      */
     public function __construct()
     {
@@ -19,9 +26,6 @@ class Import_Service_Impl implements Import_Service
         $this->turn14_rest_client = new Turn14_Rest_Client();
     }
 
-    /**
-     *
-     */
     public function import_products($turn14_items)
     {
         if ($turn14_items !== null) {
@@ -48,9 +52,6 @@ class Import_Service_Impl implements Import_Service
         }
     }
 
-    /**
-     *
-     */
     public function import_products_media($turn14_media)
     {
         if ($turn14_media !== null) {
@@ -63,9 +64,6 @@ class Import_Service_Impl implements Import_Service
         }
     }
 
-    /**
-     *
-     */
     public function import_products_pricing($turn14_pricing)
     {
         if ($turn14_pricing !== null) {
@@ -78,9 +76,6 @@ class Import_Service_Impl implements Import_Service
         }
     }
 
-    /**
-     *
-     */
     public function import_products_inventory($turn14_inventory)
     {
         if ($turn14_inventory !== null) {
@@ -93,9 +88,6 @@ class Import_Service_Impl implements Import_Service
         }
     }
 
-    /**
-     *
-     */
     public function delete_products_all()
     {
         while (true) {
@@ -112,7 +104,9 @@ class Import_Service_Impl implements Import_Service
     }
 
     /**
-     *
+     * Helper function for importing a single product
+     * 
+     * @param array product
      */
     private function import_product($turn14_product)
     {
@@ -140,7 +134,9 @@ class Import_Service_Impl implements Import_Service
     }
 
     /**
-     *
+     * Helper function for importing a single media
+     * 
+     * @param array media
      */
     private function import_media($post_id, $media)
     {
@@ -152,7 +148,9 @@ class Import_Service_Impl implements Import_Service
     }
 
     /**
-     *
+     * Helper function for importing a single pricing
+     * 
+     * @param array pricing
      */
     private function import_pricing($post_id, $pricing)
     {
@@ -160,7 +158,9 @@ class Import_Service_Impl implements Import_Service
     }
 
     /**
-     *
+     * Helper function for importing a single inventory
+     * 
+     * @param array inventory
      */
     private function import_inventory($post_id, $inventory)
     {

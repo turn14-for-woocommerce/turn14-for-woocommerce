@@ -5,7 +5,7 @@
  * @package
  * @version: 0.1.0
  * @author Sam Hall https://github.com/hallsamuel90
- 
+ *
  * 
  * @wordpress-plugin
  * Plugin Name: Turn14 for WooCommerce

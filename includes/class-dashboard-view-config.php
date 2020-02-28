@@ -1,18 +1,21 @@
 <?php
 /**
+ * Dashboard View Config configures the dashboard admin panel 
  * 
+ * @author Sam Hall https://github.com/hallsamuel90
  */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * 
+ * Class Dashboard View Config
  */
 class Dashboard_View_Config
 {
     /**
-     * 
+     * Configures the dashboard admin tabs
      */
     public static function dashboard_tabs()
     {
@@ -25,7 +28,10 @@ class Dashboard_View_Config
     }
     
     /**
+     * Loads HTML templates
      * 
+     * @param string name of template to load
+     * @param array args
      */
     public static function load_template($name, $variables = array())
     {
@@ -40,7 +46,9 @@ class Dashboard_View_Config
     }
 
     /**
+     * Sanitizes input
      * 
+     * @param string input to be sanatized
      */
     public function sanitize($input)
     {

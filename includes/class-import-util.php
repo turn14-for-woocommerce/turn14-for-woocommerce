@@ -1,15 +1,23 @@
 <?php
+/**
+ * Import Util Class
+ *
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- *
+ * Class Import Util 
  */
 class Import_Util
 {
     /**
-     *
+     * Imports a post
+     * 
+     * @param array product to be imported
      */
     public static function import_post($product)
     {
@@ -27,7 +35,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product dimensions
+     * 
+     * @param int id of associated product(post)
+     * @param array dimensions to be imported
      */
     public static function import_dimensions($post_id, $dimensions)
     {
@@ -38,7 +49,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product cateogories
+     * 
+     * @param int id of associated product(post)
+     * @param array product that contains the categories
      */
     public static function import_categories($post_id, $product)
     {
@@ -54,7 +68,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports custom attributes such as Turn14 id
+     * 
+     * @param int id of associated product(post)
+     * @param int id of turn14 product
      */
     public static function import_attributes($post_id, $product_id)
     {
@@ -75,7 +92,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product descriptions
+     * 
+     * @param int id of associated product(post)
+     * @param array media that contains descriptions
      */
     public static function import_descriptions($post_id, $media)
     {
@@ -105,7 +125,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product images
+     * 
+     * @param int id of associated product(post)
+     * @param array media that contains images
      */
     public static function import_images($post_id, $media)
     {
@@ -139,7 +162,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product pricing
+     * 
+     * @param int id of associated product(post)
+     * @param array pricing of product
      */
     public static function import_pricing($post_id, $pricing)
     {
@@ -174,7 +200,10 @@ class Import_Util
     }
 
     /**
-     *
+     * Imports product inventory
+     * 
+     * @param int id of associated product(post)
+     * @param array inventory of product
      */
     public static function import_inventory($post_id, $inventory)
     {
@@ -201,7 +230,11 @@ class Import_Util
     }
 
     /**
-     *
+     * Helper method for importing an image
+     * 
+     * @param int id of associated product(post)
+     * @param string image url
+     * @param boolean optional flag o set the primary image, defaults false to the product gallery
      */
     private static function import_image($post_id, $image_url, $primary_flag = false)
     {
@@ -241,7 +274,11 @@ class Import_Util
     }
 
     /**
-     *
+     * Fetches category id based on name. Creates a new one if not already existant
+     * 
+     * @param string category name
+     * 
+     * @return int id of category
      */
     private static function get_category_id($product_category)
     {
@@ -255,7 +292,12 @@ class Import_Util
     }
 
     /**
-     *
+     * Fetches subcategory id based on name. Creates a new one if not already existant
+     * 
+     * @param string parent category name
+     * @param string subcategory name
+     * 
+     * @return int id of subcategory
      */
     private static function get_subcategory_id($parent_category, $product_subcategory)
     {

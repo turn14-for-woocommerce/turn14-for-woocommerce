@@ -1,9 +1,15 @@
 <?php
+/**
+ * Admin Class initializes admin panel 
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
 /**
- * Turn14 Admin panel
+ * Class Turn14 Admin panel
  */
 class Admin
 {
@@ -13,6 +19,9 @@ class Admin
 
     private $controller;
 
+    /**
+     * Default Constructor
+     */
     public function __construct()
     {
         $this->controller = new Admin_Controller();
@@ -20,7 +29,7 @@ class Admin
     }
     
     /**
-     * Register Admin
+     * Registers admin panel
      */
     public function register_admin()
     {
@@ -30,7 +39,7 @@ class Admin
     }
 
     /**
-     * Register Settings
+     * Registers settings
      */
     public function register_settings()
     {
@@ -50,7 +59,7 @@ class Admin
     }
 
     /**
-     *
+     * Registers scripts
      */
     public function register_scripts($hook)
     {
@@ -62,7 +71,7 @@ class Admin
     }
 
     /**
-     * Layout Dashboard tabs
+     * Layout dashboard tabs
      */
     public static function dashboard_view()
     {

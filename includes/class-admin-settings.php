@@ -1,15 +1,24 @@
 <?php
+/**
+ * Admin Settings Class initializes settings tab 
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- *
+ * Class Admin Settings
  */
 class Admin_Settings
 {
     public static $_instance;
 
+    /**
+     * Static instance
+     */
     public static function instance()
     {
         if (is_null(self::$_instance)) {
@@ -18,12 +27,15 @@ class Admin_Settings
         return self::$_instance;
     }
 
+    /**
+     * Default Constructor
+     */
     public function __construct()
     {
     }
 
     /**
-     *
+     * Render the view
      */
     public static function view()
     {
@@ -31,7 +43,7 @@ class Admin_Settings
     }
 
     /**
-     *
+     * Render the settings
      */
     public function render_settings()
     {
@@ -42,7 +54,7 @@ class Admin_Settings
     }
 
     /**
-     *
+     * Setup settings form
      */
     public function add_settings()
     {
@@ -67,7 +79,7 @@ class Admin_Settings
     }
 
     /**
-     *
+     * Empty callback
      */
     public function empty_callback()
     {
@@ -75,7 +87,9 @@ class Admin_Settings
     }
 
     /**
-     *
+     * Input callback 
+     * 
+     * @param array args
      */
     public function input_field_callback($args)
     {

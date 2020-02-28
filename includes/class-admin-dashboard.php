@@ -1,15 +1,24 @@
 <?php
+/**
+ * Admin Dashboard Class initializes dashboard tab 
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * 
+ * Class Admin Dashboard
  */
 class Admin_Dashboard
 {
     public static $_instance;
 
+    /**
+     * Static instance
+     */
     public static function instance()
     {
         if (is_null(self::$_instance)) {
@@ -19,13 +28,16 @@ class Admin_Dashboard
         return self::$_instance;
     }
 
+    /**
+     * Default Constructor
+     */
     public function __construct()
     {
         
     }
 
     /**
-     * 
+     * Render the view
      */
     public static function view()
     {
@@ -33,7 +45,7 @@ class Admin_Dashboard
     }
 
     /**
-     * 
+     * Render the dashboard
      */
     private function render_dashboard()
     {

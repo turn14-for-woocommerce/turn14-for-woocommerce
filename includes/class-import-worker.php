@@ -64,7 +64,9 @@ class Import_Worker
     }
 
     /**
-     * Method retrieves products from Turn14 and imports them into WooCommerce
+     * Job function for importing media into WooCommerce
+     * 
+     * @param int page number of API
      */
     public function import_media($page_number)
     {
@@ -90,7 +92,9 @@ class Import_Worker
     }
 
     /**
-     * Method retrieves products from Turn14 and imports them into WooCommerce
+     * Job function for importing pricings into WooCommerce
+     * 
+     * @param int page number of API
      */
     public function import_pricings($page_number)
     {
@@ -116,7 +120,9 @@ class Import_Worker
     }
 
     /**
-     * Method retrieves products from Turn14 and imports them into WooCommerce
+     * Job function for importing inventory into WooCommerce
+     * 
+     * @param int page number of API
      */
     public function import_inventory($page_number)
     {
@@ -142,21 +148,19 @@ class Import_Worker
     }
 
     /**
-     *
+     * Job function for updating products
      */
     public function update_products()
     {
     }
 
     /**
-     *
+     * Job function for deleting all Turn14 products
      */
     public function delete_all_products()
     {
         error_log('Deleting all Turn14 products');
         set_time_limit(0);
         $this->import_service->delete_products_all();
-
-        // $this->admin_emailer->posts_delete_success();
     }
 }

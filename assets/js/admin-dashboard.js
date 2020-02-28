@@ -1,3 +1,8 @@
+/**
+  * JS Script for admin panel
+  * 
+  * @author Sam Hall https://github.com/hallsamuel90
+  */
 jQuery(document).ready(function($) {
   const SUCCESS = "success";
   const INFO = "info";

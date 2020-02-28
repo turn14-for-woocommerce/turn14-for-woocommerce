@@ -1,15 +1,24 @@
 <?php
+/**
+ * Admin Controller Class for handling ajax requests 
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- *
+ * Class Admin Controller
  */
 class Admin_Controller
 {
     private $worker;
 
+    /**
+     * Default Constructor
+     */
     public function __construct()
     {
         add_action('wp_ajax_import_all_products', array($this, 'import_all_products' ));
@@ -23,7 +32,7 @@ class Admin_Controller
     }
 
     /**
-     * Method retrieves products from Turn14 and imports them into WooCommerce
+     * Handler for ajax request which kicks off the import job
      */
     public function import_all_products()
     {
@@ -39,7 +48,7 @@ class Admin_Controller
     }
 
     /**
-     *
+     * Handler for ajax request which kicks off the update job
      */
     public function update_products()
     {
@@ -51,7 +60,7 @@ class Admin_Controller
     }
 
     /**
-     *
+     * Handler for ajax request which kicks off the delete all job
      */
     public function delete_all_products()
     {
