@@ -65,7 +65,6 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-import-util.php';
         require_once 'includes/class-import-worker.php';
         require_once 'includes/class-turn14-product-query.php';
-        require_once 'includes/class-admin-emailer.php';
         
         $this->admin = new Admin();
     }

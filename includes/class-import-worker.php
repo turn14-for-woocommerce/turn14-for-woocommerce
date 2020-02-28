@@ -16,8 +16,6 @@ class Import_Worker
 {
     private $turn14_rest_client;
     private $import_service;
-    private $admin_emailer;
-
     /**
      * Default Constructor
      */
@@ -25,7 +23,6 @@ class Import_Worker
     {
         $this->turn14_rest_client = new Turn14_Rest_Client();
         $this->import_service = new Import_Service_Impl();
-        $this->admin_emailer = new Admin_Emailer();
         
         if (! is_admin()) {
             require_once(ABSPATH . 'wp-admin/includes/post.php');
