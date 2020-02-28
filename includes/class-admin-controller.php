@@ -52,10 +52,10 @@ class Admin_Controller
      */
     public function update_products()
     {
-        if (!wp_next_scheduled('worker_update_hook')) {
+        if (!wp_next_scheduled('worker_update_products_hook')) {
             $time = strtotime('today');
             $time = $time + 18000; // midnight eastern
-            wp_schedule_event($time, 'daily', 'worker_update_hook');
+            wp_schedule_event($time, 'daily', 'worker_update_products_hook', array('page_number' => 1));
         }
     }
 

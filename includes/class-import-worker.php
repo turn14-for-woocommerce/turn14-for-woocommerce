@@ -32,13 +32,13 @@ class Import_Worker
         add_action('worker_import_media_hook', array($this, 'import_media'));
         add_action('worker_import_pricing_hook', array($this, 'import_pricings'));
         add_action('worker_import_inventory_hook', array($this, 'import_inventory'));
-        add_action('worker_update_hook', array($this, 'update_products'));
+        add_action('worker_update_products_hook', array($this, 'update_products'));
         add_action('worker_delete_all_hook', array($this, 'delete_all_products'));
     }
 
     /**
      * Job function for importing products into WooCommerce
-     * 
+     *
      * @param int page number of API
      */
     public function import_products($page_number)
@@ -47,22 +47,24 @@ class Import_Worker
         set_time_limit(0);
 
         $turn14_items = $this->turn14_rest_client->get_items($page_number);
-        if ($page_number == 1 && $turn14_items != null) {
-            $total_pages = $turn14_items['meta']['total_pages'];
-            for ($i = 2; $i <= $total_pages; $i++) {
-                wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
-                spawn_cron();
+        if ($turn14_items != null) {
+            if ($page_number == 1) {
+                $total_pages = $turn14_items['meta']['total_pages'];
+                for ($i = 2; $i <= $total_pages; $i++) {
+                    wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
+                    spawn_cron();
+                }
             }
-        }
-        $turn14_items = $turn14_items['data'];
-        if (!empty($turn14_items)) {
-            $this->import_service->import_products($turn14_items);
+            $turn14_items = $turn14_items['data'];
+            if (!empty($turn14_items)) {
+                $this->import_service->import_products($turn14_items);
+            }
         }
     }
 
     /**
      * Job function for importing media into WooCommerce
-     * 
+     *
      * @param int page number of API
      */
     public function import_media($page_number)
@@ -90,7 +92,7 @@ class Import_Worker
 
     /**
      * Job function for importing pricings into WooCommerce
-     * 
+     *
      * @param int page number of API
      */
     public function import_pricings($page_number)
@@ -118,7 +120,7 @@ class Import_Worker
 
     /**
      * Job function for importing inventory into WooCommerce
-     * 
+     *
      * @param int page number of API
      */
     public function import_inventory($page_number)
@@ -147,8 +149,25 @@ class Import_Worker
     /**
      * Job function for updating products
      */
-    public function update_products()
+    public function update_products($page_number)
     {
+        error_log('Importing Turn14 Updated Items page ' . $page_number);
+        set_time_limit(0);
+
+        $turn14_items = $this->turn14_rest_client->get_updated_items($page_number);
+        if ($turn14_items != null) {
+            if ($page_number == 1) {
+                $total_pages = $turn14_items['meta']['total_pages'];
+                for ($i = 2; $i <= $total_pages; $i++) {
+                    wp_schedule_single_event(time(), 'worker_update_products_hook', array('page_number' => $i));
+                    spawn_cron();
+                }
+            }
+            $turn14_items = $turn14_items['data'];
+            if (!empty($turn14_items)) {
+                $this->import_service->import_products($turn14_items);
+            }
+        }
     }
 
     /**

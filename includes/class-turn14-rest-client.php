@@ -19,6 +19,7 @@ class Turn14_Rest_Client
     const BASE_URL = 'https://apitest.turn14.com';
     const TOKEN_RESOURCE = '/v1/token';
     const ITEMS_RESOURCE = '/v1/items?page=';
+    const UPDATED_ITEMS_RESOURCE = '/v1/items/updates?page=';
     const MEDIA_RESOURCE = '/v1/items/data?page=';
     const ITEM_MEDIA_RESOURCE = '/v1/items/data/';
     const PRICING_RESOURCE = '/v1/pricing?page=';
@@ -39,7 +40,7 @@ class Turn14_Rest_Client
     }
 
     /**
-     * Fetches Turn14 Items from the API
+     * Fetches Turn14 items from the API
      *
      * @param int page number to be fetched
      *
@@ -51,18 +52,59 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
         $url = self::BASE_URL . self::ITEMS_RESOURCE . $page_number;
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::ITEMS_RESOURCE . $page_number,
-                array(
-                    'timeout' => 10,
-                    'headers' => $auth_header
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::ITEMS_RESOURCE . $page_number,
+            array(
+                'timeout' => 10,
+                'headers' => $auth_header
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body;
+        $response_code = $response['response']['code'];
+        if ($response_code == 401) {
+            $this->authenticate();
+            $this->get_items($page_number);
+        } elseif ($response_code == 200) {
+            $response_body = wp_remote_retrieve_body($response);
+            return json_decode($response_body, true);
+        } else {
+            error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
+    }
+
+     /**
+     * Fetches daily updated Turn14 items from the API
+     *
+     * @param int page number to be fetched
+     *
+     * @return array of fetched items (products)
+     */
+    public function get_updated_items($page_number)
+    {
+        $auth_header = array(
+            'Authorization'=> 'Bearer ' . $this->token
+        );
+        $url = self::BASE_URL . self::UPDATED_ITEMS_RESOURCE . $page_number .'&days=1';
+        $response = wp_remote_get(
+            $url,
+            array(
+                'timeout' => 10,
+                'headers' => $auth_header
+            )
+        );
+
+        $response_code = $response['response']['code'];
+        if ($response_code == 401) {
+            $this->authenticate();
+            $this->get_items($page_number);
+        } elseif ($response_code == 200) {
+            $response_body = wp_remote_retrieve_body($response);
+            return json_decode($response_body, true);
+        } else {
+            error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
