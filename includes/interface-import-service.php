@@ -1,19 +1,57 @@
 <?php
+/**
+ * Import Service Interface
+ * 
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Interface for Import Services
+ * Interface Import Services for Turn14 into WooCommerce
  */
 interface Import_Service
 {
-    public function import_product($turn14_product);
+    /**
+     * Imports full Turn14 products into WooCommerce
+     * 
+     * @param array of turn14 products
+     * 
+     */
+    public function import_products($turn14_items);
 
-    public function import_media($media, $post_id);
+    /**
+     * Imports product media into WooCommerce
+     * 
+     * @param array of turn14 products media
+     * 
+     */
+    public function import_products_media($turn14_media);
 
-    public function import_pricing($post_id, $pricing);
+    /**
+     * Imports products pricing into WooCommerce
+     * 
+     * @param array of turn14 products pricing
+     * 
+     */
+    public function import_products_pricing($turn14_pricing);
 
-    public function import_inventory($post_id, $inventory);
+    /**
+     * Imports full Turn14 products into WooCommerce
+     * 
+     * @param array of turn14 products
+     * 
+     */
+    public function import_products_inventory($turn14_inventory);
+
+    /**
+     * Imports full Turn14 products into WooCommerce
+     * 
+     * @param array of turn14 products
+     * 
+     */
+    public function delete_products_all();
 
 }

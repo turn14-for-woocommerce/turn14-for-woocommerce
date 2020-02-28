@@ -109,23 +109,29 @@ class Import_Util
      */
     public static function import_images($post_id, $media)
     {
-        foreach ($media['files'] as $file) {
-            $breaker = false;
-            if ($file['media_content'] == 'Photo - Primary') {
-                $image_links = $file['links'];
-                foreach ($image_links as $image_link) {
-                    // only upload if its big
-                    if ($image_link['size'] == 'L') {
-                        self::import_image($post_id, $image_link['url'], true);
-                        break;
-                    }
-                }
-            } else {
-                $image_links = $file['links'];
-                foreach ($image_links as $image_link) {
-                    if ($image_link['size'] == 'L') {
-                        self::import_image($post_id, $image_link['url']);
-                        break;
+        if ($post_id != null && $media != null) {
+            $files = $media['files'];
+            if ($files != null && is_array($files)) {
+                foreach ($files as $file) {
+                    $content = $file['media_content'];
+                    $image_links = $file['links'];
+                    if ($content != null && $image_links != null) {
+                        if ($content == 'Photo - Primary') {
+                            foreach ($image_links as $image_link) {
+                                // only upload if its big
+                                if ($image_link['size'] == 'L') {
+                                    self::import_image($post_id, $image_link['url'], true);
+                                    break;
+                                }
+                            }
+                        } else {
+                            foreach ($image_links as $image_link) {
+                                if ($image_link['size'] == 'L') {
+                                    self::import_image($post_id, $image_link['url']);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -239,7 +245,7 @@ class Import_Util
      */
     private static function get_category_id($product_category)
     {
-        if (!term_exists($product_category)) {
+        if (!term_exists($product_category) && $product_category != null) {
             $term = wp_insert_term($product_category, 'product_cat');
             return $term['term_id'];
         }
@@ -253,7 +259,7 @@ class Import_Util
      */
     private static function get_subcategory_id($parent_category, $product_subcategory)
     {
-        if (!term_exists($product_subcategory)) {
+        if (!term_exists($product_subcategory) && $product_subcategory != null) {
             $term = wp_insert_term(
                 $product_subcategory,
                 'product_cat',

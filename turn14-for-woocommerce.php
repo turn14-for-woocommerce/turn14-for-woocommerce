@@ -1,16 +1,20 @@
 <?php
 /**
-*Plugin Name: Turn14 Integration for WooCommerce
-*Plugin URI:
-*Description: Integrates the Turn14 API with WooCommerce
-*Version: 0.1.0
-*Author: Sam Hall
-*Author URI:
-*License:
-*Text Domain: turn14-for-woocommerce
-*WC requires at least: 3.0.0
-*WC tested up to: 3.9
-*/
+ * Turn14 for WooCommerce
+ * 
+ * @package
+ * @version: 0.1.0
+ * @author Sam Hall https://github.com/hallsamuel90
+ 
+ * 
+ * @wordpress-plugin
+ * Plugin Name: Turn14 for WooCommerce
+ * Plugin URI:
+ * Description: Integrates the Turn14 API with WooCommerce
+ * Text Domain: turn14-for-woocommerce
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.9
+ */
 
 if (! defined('ABSPATH')) {
     exit;
@@ -21,7 +25,7 @@ if (! defined('PF_PLUGIN_FILE')) {
 }
 
 /**
- * 
+ * Main class and entry point for Turn14 for WooCommerce
  */
 class Turn14_For_WooCommerce
 {
@@ -61,11 +65,10 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-import-util.php';
         require_once 'includes/class-import-worker.php';
         require_once 'includes/class-turn14-product-query.php';
-        
-        
+        require_once 'includes/class-admin-emailer.php';
         
         $this->admin = new Admin();
     }
 }
 
-new Turn14_For_WooCommerce();    //let's go
+new Turn14_For_WooCommerce();

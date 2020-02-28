@@ -1,84 +1,143 @@
 <?php
+/**
+ * Import Worker Class
+ *
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- *
+ * Class Import Worker completes import jobs
  */
 class Import_Worker
 {
     private $turn14_rest_client;
     private $import_service;
+    private $admin_emailer;
 
+    /**
+     * Default Constructor
+     */
     public function __construct()
     {
         $this->turn14_rest_client = new Turn14_Rest_Client();
         $this->import_service = new Import_Service_Impl();
+        $this->admin_emailer = new Admin_Emailer();
         
         if (! is_admin()) {
             require_once(ABSPATH . 'wp-admin/includes/post.php');
         }
         
-        add_action('worker_import_all_hook', array($this, 'import_all_products'));
+        add_action('worker_import_products_hook', array($this, 'import_products'));
+        add_action('worker_import_media_hook', array($this, 'import_media'));
+        add_action('worker_import_pricing_hook', array($this, 'import_pricings'));
+        add_action('worker_import_inventory_hook', array($this, 'import_inventory'));
         add_action('worker_update_hook', array($this, 'update_products'));
         add_action('worker_delete_all_hook', array($this, 'delete_all_products'));
     }
 
     /**
+     * Job function for importing products into WooCommerce
+     * 
+     * @param int page number of API
+     */
+    public function import_products($page_number)
+    {
+        error_log('Importing Turn14 Items page ' . $page_number);
+        set_time_limit(0);
+
+        $turn14_items = $this->turn14_rest_client->get_items($page_number);
+        if ($page_number == 1 && $turn14_items != null) {
+            $total_pages = $turn14_items['meta']['total_pages'];
+            for ($i = 2; $i <= $total_pages; $i++) {
+                wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
+                spawn_cron();
+            }
+        }
+        $turn14_items = $turn14_items['data'];
+        if (!empty($turn14_items)) {
+            $this->import_service->import_products($turn14_items);
+        }
+    }
+
+    /**
      * Method retrieves products from Turn14 and imports them into WooCommerce
      */
-    public function import_all_products()
+    public function import_media($page_number)
     {
-        $current_page = 376;
+        error_log('Importing Turn14 Media page ' . $page_number);
+        set_time_limit(0);
 
         while (true) {
-            $turn14_items = $this->turn14_rest_client->get_items($current_page);
-            if (!empty($turn14_items)) {
-                $this->import_products_posts($turn14_items);
-            } else {
-                break;
+            $turn14_media = $this->turn14_rest_client->get_media($page_number);
+            if ($page_number == 1 && $turn14_media != null) {
+                $total_pages = $turn14_media['meta']['total_pages'];
+                for ($i = 2; $i <= $total_pages; $i++) {
+                    wp_schedule_single_event(time(), 'worker_import_media_hook', array('page_number' => $i));
+                    spawn_cron();
+                }
             }
-            $current_page = $current_page + 1;
-        }
-
-        $current_page = 752;
-
-        // media
-        while (true) {
-            $turn14_media = $this->turn14_rest_client->get_media($current_page);
+            $turn14_media = $turn14_media['data'];
             if (!empty($turn14_media)) {
-                $this->import_products_media($turn14_media);
+                $this->import_service->import_products_media($turn14_media);
             } else {
                 break;
             }
-            $current_page = $current_page + 1;
         }
-        
-        $current_page = 1;
+    }
 
-        // pricing
+    /**
+     * Method retrieves products from Turn14 and imports them into WooCommerce
+     */
+    public function import_pricings($page_number)
+    {
+        error_log('Importing Turn14 Pricing page ' . $page_number);
+        set_time_limit(0);
+
         while (true) {
-            $turn14_pricing = $this->turn14_rest_client->get_pricing($current_page);
+            $turn14_pricing = $this->turn14_rest_client->get_pricing($page_number);
+            if ($page_number == 1 && $turn14_pricing != null) {
+                $total_pages = $turn14_pricing['meta']['total_pages'];
+                for ($i = 2; $i <= $total_pages; $i++) {
+                    wp_schedule_single_event(time(), 'worker_import_pricing_hook', array('page_number' => $i));
+                    spawn_cron();
+                }
+            }
+            $turn14_pricing = $turn14_pricing['data'];
             if (!empty($turn14_pricing)) {
-                $this->import_products_pricing($turn14_pricing);
+                $this->import_service->import_products_pricing($turn14_pricing);
             } else {
                 break;
             }
-            $current_page = $current_page + 1;
         }
-        
-        $current_page = 1;
+    }
 
-        // inventory
+    /**
+     * Method retrieves products from Turn14 and imports them into WooCommerce
+     */
+    public function import_inventory($page_number)
+    {
+        error_log('Importing Turn14 Pricing page ' . $page_number);
+        set_time_limit(0);
+
         while (true) {
-            $turn14_inventory = $this->turn14_rest_client->get_inventory($item['id']);
+            $turn14_inventory = $this->turn14_rest_client->get_inventory($page_number);
+            if ($page_number == 1 && $turn14_inventory != null) {
+                $total_pages = $turn14_inventory['meta']['total_pages'];
+                for ($i = 2; $i <= $total_pages; $i++) {
+                    wp_schedule_single_event(time(), 'worker_import_inventory_hook', array('page_number' => $i));
+                    spawn_cron();
+                }
+            }
+            $turn14_inventory = $turn14_inventory['data'];
             if (!empty($turn14_inventory)) {
-                $this->import_products_inventory($turn14_inventory);
+                $this->import_service->import_products_inventory($turn14_inventory);
             } else {
                 break;
             }
-            $current_page = $current_page + 1;
         }
     }
 
@@ -94,80 +153,10 @@ class Import_Worker
      */
     public function delete_all_products()
     {
-        while (true) {
-            $products = Turn14_Product_Query::get_all_turn14_products();
-            if (!empty($products)) {
-                foreach ($products as $product) {
-                    $post_id = $product->get_id();
-                    wp_delete_post($post_id, true);
-                }
-            } else {
-                break;
-            }
-        }
+        error_log('Deleting all Turn14 products');
+        set_time_limit(0);
+        $this->import_service->delete_products_all();
 
-        //send email
-    }
-
-    /**
-     *
-     */
-    private function import_products_posts($turn14_items)
-    {
-        if ($turn14_items !== null) {
-            foreach ($turn14_items as $item) {
-                if (!post_exists($item['attributes']['product_name'])) {
-                    $post_id = $this->import_service->import_product($item);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private function import_products_media($turn14_media)
-    {
-        if ($turn14_media !== null) {
-            foreach ($turn14_media as $media) {
-                $product =  Turn14_Product_Query::get_product_by_turn14_id($media['id']);
-                if ($product != null) {
-                    $product_id = $product->get_id();
-                    $this->import_service->import_media($media, $product_id);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private function import_products_pricing($turn14_pricing)
-    {
-        if ($turn14_pricing !== null) {
-            foreach ($turn14_pricing as $pricing) {
-                $product =  Turn14_Product_Query::get_product_by_turn14_id($pricing['id']);
-                if ($product != null) {
-                    $product_id = $product->get_id();
-                    $this->import_service->import_pricing($product_id, $pricing);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private function import_products_inventory($turn14_inventory)
-    {
-        if ($turn14_inventory !== null) {
-            foreach ($turn14_inventory as $inventory) {
-                $product =  Turn14_Product_Query::get_product_by_turn14_id($inventory['id']);
-                if ($product != null) {
-                    $product_id = $product->get_id();
-                    $this->import_service->import_inventory($product_id, $inventory);
-                }
-            }
-        }
+        // $this->admin_emailer->posts_delete_success();
     }
 }

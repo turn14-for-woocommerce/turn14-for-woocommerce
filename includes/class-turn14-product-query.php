@@ -1,48 +1,71 @@
 <?php
+/**
+ * Turn14 Product Query Class
+ *
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- *
+ * Class Turn14 Product Query for custom queries of Turn14 products
  */
 class Turn14_Product_Query
 {
+    const PRODUCT_BY_ID_QUERY = "SELECT DISTINCT post_id FROM `wp_posts` INNER JOIN `wp_postmeta`"
+    . " WHERE meta_key = '_product_attributes'"
+    . " AND post_type = 'product'"
+    . " AND meta_value LIKE '%turn14_id%'"
+    . " AND meta_value LIKE '%%%s%%'";
+
+    const ALL_PRODUCTS_QUERY = "SELECT DISTINCT post_id FROM `wp_posts` INNER JOIN `wp_postmeta`"
+    . " WHERE meta_key = '_product_attributes'"
+    . " AND post_type = 'product'"
+    . " AND meta_value LIKE '%turn14_id%'";
+
+    private $db;
+    
     /**
-     *
+     * Default Constructor
      */
-    public static function get_product_by_turn14_id($turn14_id)
+    public function __construct()
     {
-        // SELECT DISTINCT post_id, meta_value FROM `wp_posts` INNER JOIN `wp_postmeta` 
-        // WHERE meta_key = '_product_attributes' 
-        // AND post_type = 'product'
-        // AND meta_value LIKE '%turn14_id%'
-        $args = array(
-            array(
-                'taxonomy' => 'pa_turn14_id',
-                'field' => 'slug',
-                'terms' => $turn14_id,
-                'operator' => 'IN'
-            )
-        );
-
-        $products = wc_get_products($args);
-
-        // should only be one
-        return $products[0];
+        $this->db = $GLOBALS['wpdb'];
     }
 
     /**
-     *
+     * Gets product(post) id based on the turn14 id 
+     * 
+     * @param int turn14 id of the product(post)
+     * 
+     * @return int product(post) id
      */
-    public static function get_all_turn14_products()
+    public function get_product_id_by_turn14_id($turn14_id)
     {
-        return  wc_get_products(array(
-            array(
-                'limit' => -1,
-                'taxonomy' => 'pa_turn14_id',
-                'operator' => 'EXISTS'
+        $turn14_id = '"' . $turn14_id . '"';
+        $product = $this->db->get_results(
+            $this->db->prepare(
+                self::PRODUCT_BY_ID_QUERY,
+                $turn14_id
             )
-        ));
+        )[0];
+
+        return $product->post_id;
+    }
+
+    /**
+     * Gets all turn14 product(post) ids  
+     * 
+     * @return array product(post) ids
+     */
+    public function get_all_turn14_products()
+    {
+        $products = $this->db->get_results(
+            $this->db->prepare(self::ALL_PRODUCTS_QUERY)
+        );
+
+        return $products;
     }
 }

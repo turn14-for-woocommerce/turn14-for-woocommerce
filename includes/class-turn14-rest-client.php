@@ -1,15 +1,19 @@
 <?php
+/**
+ * Turn14 Rest Client Class
+ *
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * 
+ * Class Turn14 Rest Client for communication with Turn14 API
  */
 class Turn14_Rest_Client
 {
-    public static $_instance;
-
     const API_CLIENT = 'turn14_api_client_id';
     const API_SECRET = 'turn14_api_secret';
     const BASE_URL = 'https://apitest.turn14.com';
@@ -24,15 +28,22 @@ class Turn14_Rest_Client
 
     private $token;
 
+    /**
+     * Default Constuctor
+     */
     public function __construct()
     {
-        add_filter( 'https_local_ssl_verify', '__return_false' );
-        add_filter( 'https_ssl_verify', '__return_false' );
+        add_filter('https_local_ssl_verify', '__return_false');
+        add_filter('https_ssl_verify', '__return_false');
         $this->health_check();
     }
 
     /**
-     * 
+     * Fetches Turn14 Items from the API
+     *
+     * @param int page number to be fetched
+     *
+     * @return array of fetched items (products)
      */
     public function get_items($page_number)
     {
@@ -44,18 +55,22 @@ class Turn14_Rest_Client
             wp_remote_get(
                 self::BASE_URL . self::ITEMS_RESOURCE . $page_number,
                 array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
+                    'timeout' => 10,
+                    'headers' => $auth_header
                 )
             )
         );
 
-        $response_body = json_decode( $response_body, true);
-        return $response_body['data'];
+        $response_body = json_decode($response_body, true);
+        return $response_body;
     }
 
     /**
-     * 
+     * Fetches Turn14 media from the API
+     *
+     * @param int page number to be fetched
+     *
+     * @return array of fetched media
      */
     public function get_media($page_number)
     {
@@ -73,12 +88,16 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
-        return $response_body['data'];
+        $response_body = json_decode($response_body, true);
+        return $response_body;
     }
 
     /**
-     * 
+     * Fetches Turn14 media from the API for particular item
+     *
+     * @param int id of item associated to media
+     *
+     * @return array of fetched media
      */
     public function get_item_media($item_id)
     {
@@ -96,12 +115,16 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
+        $response_body = json_decode($response_body, true);
         return $response_body['data'];
     }
 
     /**
-     * 
+     * Fetches Turn14 pricing from the API
+     *
+     * @param int page number to be fetched
+     *
+     * @return array of fetched pricing
      */
     public function get_pricing($page_number)
     {
@@ -119,12 +142,16 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
-        return $response_body['data'];
+        $response_body = json_decode($response_body, true);
+        return $response_body;
     }
 
     /**
-     * 
+     * Fetches Turn14 pricing from the API for particular item
+     *
+     * @param int id of item associated to pricing
+     *
+     * @return array of fetched media
      */
     public function get_item_pricing($item_id)
     {
@@ -142,12 +169,16 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
+        $response_body = json_decode($response_body, true);
         return $response_body['data'];
     }
 
     /**
-     * 
+     * Fetches Turn14 inventory from the API
+     *
+     * @param int page number to be fetched
+     *
+     * @return array of fetched inventory
      */
     public function get_inventory($page_number)
     {
@@ -165,12 +196,16 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
-        return $response_body['data'];
+        $response_body = json_decode($response_body, true);
+        return $response_body;
     }
 
     /**
-     * 
+     * Fetches Turn14 inventory from the API for particular item
+     *
+     * @param int id of item associated to inventory
+     *
+     * @return array of fetched inventory
      */
     public function get_item_inventory($item_id)
     {
@@ -188,12 +223,12 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
+        $response_body = json_decode($response_body, true);
         return $response_body['data'];
     }
 
     /**
-     * 
+     * Authenticates against the Turn14 API based on credentials entered in the Settings tab
      */
     private function authenticate()
     {
@@ -215,22 +250,21 @@ class Turn14_Rest_Client
             )
         );
 
-        $response_body = json_decode( $response_body, true);
+        $response_body = json_decode($response_body, true);
         // cache for future use and set timeout
         set_transient('turn14_api_token', $response_body['access_token'], 60*60);
     }
 
     /**
-     * 
+     * Checks to see if token has expired and reauthenticates if need be
      */
-    private function health_check(){
-        
+    private function health_check()
+    {
         $turn14_api_token = get_transient('turn14_api_token');
 
-        if ($turn14_api_token != null){
+        if ($turn14_api_token != null) {
             $this->token = get_transient('turn14_api_token');
-        }
-        else{
+        } else {
             $this->authenticate();
             $this->token = get_transient('turn14_api_token');
         }

@@ -27,11 +27,13 @@ class Admin_Controller
      */
     public function import_all_products()
     {
-        wp_schedule_single_event(time(), 'worker_import_all_hook');
+        // wp_unschedule_hook('worker_import_products_hook');
+        
+        wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => 1));
         spawn_cron();
         wp_send_json_success(
             array(
-            'msg' => 'Importing all products in the background. This may take a few minutes... We will email you when we are finished!'
+            'msg' => 'Importing all products in the background. This may take a while... We will email you when we are finished!'
             )
         );
     }
