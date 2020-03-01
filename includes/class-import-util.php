@@ -99,27 +99,35 @@ class Import_Util
      */
     public static function import_descriptions($post_id, $media)
     {
-        foreach ($media['descriptions'] as $description) {
-            if ($description['type'] == 'Market Description') {
-                wp_update_post(array(
-                    'ID' => $post_id,
-                    'post_content' => $description['description']
-                ));
-            } elseif ($description['type'] == 'Application Summary') {
-                $product_attributes = get_post_meta($post_id, '_product_attributes', true);
-                array_push($product_attributes, array(
-                    'name' => 'Fitment',
-                    'value' => $description['description'],
-                    'position' => 1,
-                    'is_visible' => 1,
-                    'is_variation' => 0,
-                    'is_taxonomy' => 0
-                ));
-                update_post_meta(
-                    $post_id,
-                    '_product_attributes',
-                    $product_attributes
-                );
+        if ($post_id != null && $media != null) {
+            $descriptions = $media['descriptions'];
+            if ($descriptions != null){
+                foreach ($descriptions as $description) {
+                    $description_type = $description['type'];
+                    if ($description_type != null){
+                        if ($description_type == 'Market Description') {
+                            wp_update_post(array(
+                                'ID' => $post_id,
+                                'post_content' => $description['description']
+                            ));
+                        } elseif ($description_type == 'Application Summary') {
+                            $product_attributes = get_post_meta($post_id, '_product_attributes', true);
+                            array_push($product_attributes, array(
+                                'name' => 'Fitment',
+                                'value' => $description['description'],
+                                'position' => 1,
+                                'is_visible' => 1,
+                                'is_variation' => 0,
+                                'is_taxonomy' => 0
+                            ));
+                            update_post_meta(
+                                $post_id,
+                                '_product_attributes',
+                                $product_attributes
+                            );
+                        }
+                    }
+                }
             }
         }
     }
@@ -196,6 +204,9 @@ class Import_Util
         } elseif ($product_prices['MAP'] != null) {
             update_post_meta($post_id, '_regular_price', $product_prices['MAP']);
             update_post_meta($post_id, '_price', $product_prices['MAP']);
+        } elseif ($product_prices['Jobber'] != null) {
+            update_post_meta($post_id, '_regular_price', $product_prices['Jobber']);
+            update_post_meta($post_id, '_price', $product_prices['Jobber']);
         }
     }
 
@@ -226,7 +237,7 @@ class Import_Util
 
         update_post_meta($post_id, '_manage_stock', 'yes');
         wc_update_product_stock($post_id, $total_stock, 'set');
-        update_post_meta($post_id, '_backorders', 'no');
+        update_post_meta($post_id, '_backorders', 'yes');
     }
 
     /**
@@ -236,7 +247,7 @@ class Import_Util
      * @param string image url
      * @param boolean optional flag o set the primary image, defaults false to the product gallery
      */
-    private static function import_image($post_id, $image_url, $primary_flag = false)
+    public static function import_image($post_id, $image_url, $primary_flag = false)
     {
         $upload_dir = wp_upload_dir();
         $image_data = file_get_contents($image_url);

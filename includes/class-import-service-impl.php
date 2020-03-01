@@ -115,6 +115,11 @@ class Import_Service_Impl implements Import_Service
 
         $post_id = Import_Util::import_post($turn14_product);
 
+        $thumbnail = $turn14_product['thumbnail'];
+        if ($thumbnail != null){
+            Import_Util::import_image($post_id, $thumbnail, true);
+        }
+        
         update_post_meta($post_id, '_sku', $turn14_product['mfr_part_number']);
 
         // dimensions, first box only

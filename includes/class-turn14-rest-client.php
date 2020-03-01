@@ -61,25 +61,25 @@ class Turn14_Rest_Client
         );
 
         $response_code = $response['response']['code'];
-        if ($response_code == 401) {
-            $this->authenticate();
-            $this->get_items($page_number);
-        } elseif ($response_code == 200) {
+        if ($response_code == 200) {
             $response_body = wp_remote_retrieve_body($response);
             return json_decode($response_body, true);
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_items($page_number);
         } else {
             error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
             return null;
         }
     }
 
-     /**
-     * Fetches daily updated Turn14 items from the API
-     *
-     * @param int page number to be fetched
-     *
-     * @return array of fetched items (products)
-     */
+    /**
+    * Fetches daily updated Turn14 items from the API
+    *
+    * @param int page number to be fetched
+    *
+    * @return array of fetched items (products)
+    */
     public function get_updated_items($page_number)
     {
         $auth_header = array(
@@ -95,12 +95,12 @@ class Turn14_Rest_Client
         );
 
         $response_code = $response['response']['code'];
-        if ($response_code == 401) {
-            $this->authenticate();
-            $this->get_items($page_number);
-        } elseif ($response_code == 200) {
+        if ($response_code == 200) {
             $response_body = wp_remote_retrieve_body($response);
             return json_decode($response_body, true);
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_updated_items($page_number);
         } else {
             error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
             return null;
@@ -120,18 +120,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::MEDIA_RESOURCE . $page_number,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::MEDIA_RESOURCE . $page_number,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body;
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = wp_remote_retrieve_body($response);
+            return json_decode($response_body, true);
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_media($page_number);
+        } else {
+            error_log('We are having issues retrieving media from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -147,18 +154,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::ITEM_MEDIA_RESOURCE . $item_id,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::ITEM_MEDIA_RESOURCE . $item_id,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body['data'];
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+            return $response_body['data'];
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_item_media($item_id);
+        } else {
+            error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -174,18 +188,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::PRICING_RESOURCE . $page_number,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::PRICING_RESOURCE . $page_number,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body;
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = wp_remote_retrieve_body($response);
+            return json_decode($response_body, true);
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_pricing($page_number);
+        } else {
+            error_log('We are having issues retrieving pricings from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -193,7 +214,7 @@ class Turn14_Rest_Client
      *
      * @param int id of item associated to pricing
      *
-     * @return array of fetched media
+     * @return array of fetched item pricing
      */
     public function get_item_pricing($item_id)
     {
@@ -201,18 +222,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::ITEM_PRICING_RESOURCE . $item_id,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::ITEM_PRICING_RESOURCE . $item_id,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body['data'];
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+            return $response_body['data'];
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_item_pricing($item_id);
+        } else {
+            error_log('We are having issues retrieving item pricing from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -228,18 +256,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::INVENTORY_RESOURCE . $page_number,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::INVENTORY_RESOURCE . $page_number,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body;
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = wp_remote_retrieve_body($response);
+            return json_decode($response_body, true);
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_inventory($page_number);
+        } else {
+            error_log('We are having issues retrieving inventory from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -255,18 +290,25 @@ class Turn14_Rest_Client
             'Authorization'=> 'Bearer ' . $this->token
         );
 
-        $response_body = wp_remote_retrieve_body(
-            wp_remote_get(
-                self::BASE_URL . self::ITEM_INVENTORY_RESOURCE . $item_id,
-                array(
-                    'headers' => $auth_header,
-                    'timeout' => 10
-                )
+        $response = wp_remote_get(
+            self::BASE_URL . self::ITEM_INVENTORY_RESOURCE . $item_id,
+            array(
+                'headers' => $auth_header,
+                'timeout' => 10
             )
         );
 
-        $response_body = json_decode($response_body, true);
-        return $response_body['data'];
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+            $response_body = json_decode(wp_remote_retrieve_body($response), true);
+            return $response_body['data'];
+        } elseif ($response_code == 401) {
+            $this->authenticate();
+            $this->get_item_inventory($item_id);
+        } else {
+            error_log('We are having issues retrieving item inventory from the Turn14 API. Responded with ' . $response_code);
+            return null;
+        }
     }
 
     /**
@@ -295,6 +337,7 @@ class Turn14_Rest_Client
         $response_body = json_decode($response_body, true);
         // cache for future use and set timeout
         set_transient('turn14_api_token', $response_body['access_token'], 60*60);
+        $this->token = get_transient('turn14_api_token');
     }
 
     /**
@@ -303,12 +346,10 @@ class Turn14_Rest_Client
     private function health_check()
     {
         $turn14_api_token = get_transient('turn14_api_token');
-
         if ($turn14_api_token != null) {
             $this->token = get_transient('turn14_api_token');
         } else {
             $this->authenticate();
-            $this->token = get_transient('turn14_api_token');
         }
     }
 }
