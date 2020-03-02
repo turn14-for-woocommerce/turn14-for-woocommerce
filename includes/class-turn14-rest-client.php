@@ -67,6 +67,9 @@ class Turn14_Rest_Client
         } elseif ($response_code == 401) {
             $this->authenticate();
             $this->get_items($page_number);
+        } elseif ($response_code == 429) {
+            sleep(1);
+            $this->get_items($page_number);
         } else {
             error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
             return null;
@@ -100,6 +103,9 @@ class Turn14_Rest_Client
             return json_decode($response_body, true);
         } elseif ($response_code == 401) {
             $this->authenticate();
+            $this->get_updated_items($page_number);
+        } elseif ($response_code == 429) {
+            sleep(1);
             $this->get_updated_items($page_number);
         } else {
             error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
@@ -135,6 +141,9 @@ class Turn14_Rest_Client
         } elseif ($response_code == 401) {
             $this->authenticate();
             $this->get_media($page_number);
+        } elseif ($response_code == 429) {
+            sleep(1);
+            $this->get_media($page_number);
         } else {
             error_log('We are having issues retrieving media from the Turn14 API. Responded with ' . $response_code);
             return null;
@@ -168,6 +177,9 @@ class Turn14_Rest_Client
             return $response_body['data'];
         } elseif ($response_code == 401) {
             $this->authenticate();
+            $this->get_item_media($item_id);
+        } elseif ($response_code == 429) {
+            sleep(1);
             $this->get_item_media($item_id);
         } else {
             error_log('We are having issues retrieving products from the Turn14 API. Responded with ' . $response_code);
@@ -203,6 +215,9 @@ class Turn14_Rest_Client
         } elseif ($response_code == 401) {
             $this->authenticate();
             $this->get_pricing($page_number);
+        } elseif ($response_code == 429) {
+            sleep(1);
+            $this->get_pricing($page_number);
         } else {
             error_log('We are having issues retrieving pricings from the Turn14 API. Responded with ' . $response_code);
             return null;
@@ -236,6 +251,9 @@ class Turn14_Rest_Client
             return $response_body['data'];
         } elseif ($response_code == 401) {
             $this->authenticate();
+            $this->get_item_pricing($item_id);
+        } elseif ($response_code == 429) {
+            sleep(1);
             $this->get_item_pricing($item_id);
         } else {
             error_log('We are having issues retrieving item pricing from the Turn14 API. Responded with ' . $response_code);
@@ -271,6 +289,9 @@ class Turn14_Rest_Client
         } elseif ($response_code == 401) {
             $this->authenticate();
             $this->get_inventory($page_number);
+        } elseif ($response_code == 429) {
+            sleep(1);
+            $this->get_inventory($page_number);
         } else {
             error_log('We are having issues retrieving inventory from the Turn14 API. Responded with ' . $response_code);
             return null;
@@ -304,6 +325,9 @@ class Turn14_Rest_Client
             return $response_body['data'];
         } elseif ($response_code == 401) {
             $this->authenticate();
+            $this->get_item_inventory($item_id);
+        } elseif ($response_code == 429) {
+            sleep(1);
             $this->get_item_inventory($item_id);
         } else {
             error_log('We are having issues retrieving item inventory from the Turn14 API. Responded with ' . $response_code);

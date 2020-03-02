@@ -10,13 +10,13 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Class Import Util 
+ * Class Import Util
  */
 class Import_Util
 {
     /**
      * Imports a post
-     * 
+     *
      * @param array product to be imported
      */
     public static function import_post($product)
@@ -36,7 +36,7 @@ class Import_Util
 
     /**
      * Imports product dimensions
-     * 
+     *
      * @param int id of associated product(post)
      * @param array dimensions to be imported
      */
@@ -50,7 +50,7 @@ class Import_Util
 
     /**
      * Imports product cateogories
-     * 
+     *
      * @param int id of associated product(post)
      * @param array product that contains the categories
      */
@@ -69,7 +69,7 @@ class Import_Util
 
     /**
      * Imports custom attributes such as Turn14 id
-     * 
+     *
      * @param int id of associated product(post)
      * @param int id of turn14 product
      */
@@ -93,7 +93,7 @@ class Import_Util
 
     /**
      * Imports product descriptions
-     * 
+     *
      * @param int id of associated product(post)
      * @param array media that contains descriptions
      */
@@ -101,10 +101,10 @@ class Import_Util
     {
         if ($post_id != null && $media != null) {
             $descriptions = $media['descriptions'];
-            if ($descriptions != null){
+            if ($descriptions != null) {
                 foreach ($descriptions as $description) {
                     $description_type = $description['type'];
-                    if ($description_type != null){
+                    if ($description_type != null) {
                         if ($description_type == 'Market Description') {
                             wp_update_post(array(
                                 'ID' => $post_id,
@@ -134,7 +134,7 @@ class Import_Util
 
     /**
      * Imports product images
-     * 
+     *
      * @param int id of associated product(post)
      * @param array media that contains images
      */
@@ -171,7 +171,7 @@ class Import_Util
 
     /**
      * Imports product pricing
-     * 
+     *
      * @param int id of associated product(post)
      * @param array pricing of product
      */
@@ -212,7 +212,7 @@ class Import_Util
 
     /**
      * Imports product inventory
-     * 
+     *
      * @param int id of associated product(post)
      * @param array inventory of product
      */
@@ -230,19 +230,22 @@ class Import_Util
         }
 
         $mfg_inventory = $inventory[0]['attributes']['manufacturer'];
-
-        if ($mfg_inventory['stock'] > 0) {
-            $total_stock = $total_stock + $mfg_inventory['stock'];
+        if ($mfg_inventory != null) {
+            if ($mfg_inventory['stock'] > 0) {
+                $total_stock = $total_stock + $mfg_inventory['stock'];
+            }
         }
 
         update_post_meta($post_id, '_manage_stock', 'yes');
+        update_post_meta($post_id, '_backorders', 'notify');
         wc_update_product_stock($post_id, $total_stock, 'set');
-        update_post_meta($post_id, '_backorders', 'yes');
+        wc_update_product_stock_status($post_id, 'instock');
+        
     }
 
     /**
      * Helper method for importing an image
-     * 
+     *
      * @param int id of associated product(post)
      * @param string image url
      * @param boolean optional flag o set the primary image, defaults false to the product gallery
@@ -286,9 +289,9 @@ class Import_Util
 
     /**
      * Fetches category id based on name. Creates a new one if not already existant
-     * 
+     *
      * @param string category name
-     * 
+     *
      * @return int id of category
      */
     private static function get_category_id($product_category)
@@ -304,10 +307,10 @@ class Import_Util
 
     /**
      * Fetches subcategory id based on name. Creates a new one if not already existant
-     * 
+     *
      * @param string parent category name
      * @param string subcategory name
-     * 
+     *
      * @return int id of subcategory
      */
     private static function get_subcategory_id($parent_category, $product_subcategory)

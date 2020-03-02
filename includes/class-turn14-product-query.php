@@ -14,15 +14,13 @@ if (! defined('ABSPATH')) {
  */
 class Turn14_Product_Query
 {
-    const PRODUCT_BY_ID_QUERY = "SELECT DISTINCT post_id FROM `wp_posts` INNER JOIN `wp_postmeta`"
+    const PRODUCT_BY_ID_QUERY = "SELECT DISTINCT post_id FROM `wp_postmeta`"
     . " WHERE meta_key = '_product_attributes'"
-    . " AND post_type = 'product'"
     . " AND meta_value LIKE '%turn14_id%'"
     . " AND meta_value LIKE '%%%s%%'";
 
-    const ALL_PRODUCTS_QUERY = "SELECT DISTINCT post_id FROM `wp_posts` INNER JOIN `wp_postmeta`"
+    const ALL_PRODUCTS_QUERY = "SELECT DISTINCT post_id FROM `wp_postmeta`"
     . " WHERE meta_key = '_product_attributes'"
-    . " AND post_type = 'product'"
     . " AND meta_value LIKE '%turn14_id%'";
 
     private $db;

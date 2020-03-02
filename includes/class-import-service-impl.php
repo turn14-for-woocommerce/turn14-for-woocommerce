@@ -30,9 +30,14 @@ class Import_Service_Impl implements Import_Service
     {
         if ($turn14_items !== null) {
             foreach ($turn14_items as $item) {
+                $post_id = null;
                 if (!post_exists($item['attributes']['product_name'])) {
                     $post_id = $this->import_product($item);
-                    
+                } else{
+                    $post_id = $this->turn14_product_query->get_product_id_by_turn14_id($item['id']);
+                }
+
+                if ($post_id != null){
                     $media = $this->turn14_rest_client->get_item_media($item['id'])[0];
                     if ($media != null){
                         $this->import_media($post_id, $media);
@@ -119,7 +124,7 @@ class Import_Service_Impl implements Import_Service
         if ($thumbnail != null){
             Import_Util::import_image($post_id, $thumbnail, true);
         }
-        
+
         update_post_meta($post_id, '_sku', $turn14_product['mfr_part_number']);
 
         // dimensions, first box only

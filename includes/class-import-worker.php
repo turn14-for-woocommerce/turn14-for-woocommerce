@@ -52,8 +52,8 @@ class Import_Worker
         if ($turn14_items != null) {
             $total_pages = $turn14_items['meta']['total_pages'];
             if ($page_number == 1) {
-                $this->emailer->send_admin_email('Turn14 Product Import Starting', 'The Turn14 product import process has started. '
-                . 'There are a lot of products to import! We will send you a another email letting you know we have finsihed...');
+                $this->emailer->send_admin_email('Turn14 Product Import Starting', 'The Turn14 product import process has started!'
+                . ' There are a lot of products to import! We will send you a another email letting you know we have finsihed...');
                 for ($i = 2; $i <= $total_pages; $i++) {
                     wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
                     spawn_cron();
@@ -166,7 +166,8 @@ class Import_Worker
         if ($turn14_items != null) {
             $total_pages = $turn14_items['meta']['total_pages'];
             if ($page_number == 1) {
-                $total_pages = $turn14_items['meta']['total_pages'];
+                $this->emailer->send_admin_email('Turn14 Product Update Starting', 'The Turn14 product update process has started!'
+                . ' There are a lot of products to update! We will send you a another email letting you know we have finsihed...');
                 for ($i = 2; $i <= $total_pages; $i++) {
                     wp_schedule_single_event(time(), 'worker_update_products_hook', array('page_number' => $i));
                     spawn_cron();
@@ -179,7 +180,7 @@ class Import_Worker
 
             // send completion email
             if ($page_number == $total_pages) {
-                $this->emailer->send_admin_email('Turn14 Product Updates', 'All new and updated Turn14 prodcuts have been succesfully imported!');
+                $this->emailer->send_admin_email('Turn14 Product Updated', 'All new and updated Turn14 prodcuts have been succesfully imported!');
             }
         }
     }
@@ -191,6 +192,8 @@ class Import_Worker
     {
         error_log('Deleting all Turn14 products');
         set_time_limit(0);
+        $this->emailer->send_admin_email('Turn14 Product Deletion Starting', 'The Turn14 product deletion process has started!'
+        . ' There are a lot of products to delete! We will send you a another email letting you know we have finsihed...');
         $this->import_service->delete_products_all();
         $this->emailer->send_admin_email('Turn14 Products Deleted', 'All Turn14 prodcuts have been succesfully deleted!');
     }
