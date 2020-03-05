@@ -1,15 +1,15 @@
 /**
-  * JS Script for admin panel
-  * 
-  * @author Sam Hall https://github.com/hallsamuel90
-  */
+ * JS Script for admin panel
+ *
+ * @author Sam Hall https://github.com/hallsamuel90
+ */
 jQuery(document).ready(function($) {
   const SUCCESS = "success";
   const INFO = "info";
   const ERROR = "error";
-  
+
   /**
-   *
+   * Button for hitting the import endpoint
    */
   $("#import-products-btn").on("click", function(e) {
     console.log("importing products");
@@ -29,28 +29,32 @@ jQuery(document).ready(function($) {
   });
 
   /**
-   *
+   * Button for hitting the delete endpoint
    */
   $("#delete-products-btn").on("click", function(e) {
     console.log("deleting products");
     e.preventDefault();
     $("#delete-product-spinner").addClass("is-active");
-    $.ajax({
-      type: "POST",
-      url: admin_dashboard.ajax,
-      data: { action: "delete_all_products" },
-      success: function(data) {
-        msg = data.data.msg;
-        console.log(msg);
-        $("#delete-product-spinner").removeClass("is-active");
-        notice(msg, INFO);
-      }
-    });
+    var confirmation = confirm(
+      "Are you sure you want to delete all Turn14 products?"
+    );
+    if (confirmation) {
+      $.ajax({
+        type: "POST",
+        url: admin_dashboard.ajax,
+        data: { action: "delete_all_products" },
+        success: function(data) {
+          msg = data.data.msg;
+          console.log(msg);
+          $("#delete-product-spinner").removeClass("is-active");
+          notice(msg, INFO);
+        }
+      });
+    }
   });
 
   /**
-   *
-   * @param {*} msg
+   * Generic wp-notice 
    */
   function notice(msg, type) {
     $("#notice").append(

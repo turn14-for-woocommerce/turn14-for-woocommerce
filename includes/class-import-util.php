@@ -10,13 +10,13 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Class Import Util 
+ * Class Import Util
  */
 class Import_Util
 {
     /**
      * Imports a post
-     * 
+     *
      * @param array product to be imported
      */
     public static function import_post($product)
@@ -36,7 +36,7 @@ class Import_Util
 
     /**
      * Imports product dimensions
-     * 
+     *
      * @param int id of associated product(post)
      * @param array dimensions to be imported
      */
@@ -50,7 +50,7 @@ class Import_Util
 
     /**
      * Imports product cateogories
-     * 
+     *
      * @param int id of associated product(post)
      * @param array product that contains the categories
      */
@@ -69,7 +69,7 @@ class Import_Util
 
     /**
      * Imports custom attributes such as Turn14 id
-     * 
+     *
      * @param int id of associated product(post)
      * @param int id of turn14 product
      */
@@ -93,40 +93,48 @@ class Import_Util
 
     /**
      * Imports product descriptions
-     * 
+     *
      * @param int id of associated product(post)
      * @param array media that contains descriptions
      */
     public static function import_descriptions($post_id, $media)
     {
-        foreach ($media['descriptions'] as $description) {
-            if ($description['type'] == 'Market Description') {
-                wp_update_post(array(
-                    'ID' => $post_id,
-                    'post_content' => $description['description']
-                ));
-            } elseif ($description['type'] == 'Application Summary') {
-                $product_attributes = get_post_meta($post_id, '_product_attributes', true);
-                array_push($product_attributes, array(
-                    'name' => 'Fitment',
-                    'value' => $description['description'],
-                    'position' => 1,
-                    'is_visible' => 1,
-                    'is_variation' => 0,
-                    'is_taxonomy' => 0
-                ));
-                update_post_meta(
-                    $post_id,
-                    '_product_attributes',
-                    $product_attributes
-                );
+        if ($post_id != null && $media != null) {
+            $descriptions = $media['descriptions'];
+            if ($descriptions != null) {
+                foreach ($descriptions as $description) {
+                    $description_type = $description['type'];
+                    if ($description_type != null) {
+                        if ($description_type == 'Market Description') {
+                            wp_update_post(array(
+                                'ID' => $post_id,
+                                'post_content' => $description['description']
+                            ));
+                        } elseif ($description_type == 'Application Summary') {
+                            $product_attributes = get_post_meta($post_id, '_product_attributes', true);
+                            array_push($product_attributes, array(
+                                'name' => 'Fitment',
+                                'value' => $description['description'],
+                                'position' => 1,
+                                'is_visible' => 1,
+                                'is_variation' => 0,
+                                'is_taxonomy' => 0
+                            ));
+                            update_post_meta(
+                                $post_id,
+                                '_product_attributes',
+                                $product_attributes
+                            );
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
      * Imports product images
-     * 
+     *
      * @param int id of associated product(post)
      * @param array media that contains images
      */
@@ -163,7 +171,7 @@ class Import_Util
 
     /**
      * Imports product pricing
-     * 
+     *
      * @param int id of associated product(post)
      * @param array pricing of product
      */
@@ -196,12 +204,15 @@ class Import_Util
         } elseif ($product_prices['MAP'] != null) {
             update_post_meta($post_id, '_regular_price', $product_prices['MAP']);
             update_post_meta($post_id, '_price', $product_prices['MAP']);
+        } elseif ($product_prices['Jobber'] != null) {
+            update_post_meta($post_id, '_regular_price', $product_prices['Jobber']);
+            update_post_meta($post_id, '_price', $product_prices['Jobber']);
         }
     }
 
     /**
      * Imports product inventory
-     * 
+     *
      * @param int id of associated product(post)
      * @param array inventory of product
      */
@@ -219,24 +230,27 @@ class Import_Util
         }
 
         $mfg_inventory = $inventory[0]['attributes']['manufacturer'];
-
-        if ($mfg_inventory['stock'] > 0) {
-            $total_stock = $total_stock + $mfg_inventory['stock'];
+        if ($mfg_inventory != null) {
+            if ($mfg_inventory['stock'] > 0) {
+                $total_stock = $total_stock + $mfg_inventory['stock'];
+            }
         }
 
         update_post_meta($post_id, '_manage_stock', 'yes');
+        update_post_meta($post_id, '_backorders', 'notify');
         wc_update_product_stock($post_id, $total_stock, 'set');
-        update_post_meta($post_id, '_backorders', 'no');
+        wc_update_product_stock_status($post_id, 'instock');
+        
     }
 
     /**
      * Helper method for importing an image
-     * 
+     *
      * @param int id of associated product(post)
      * @param string image url
      * @param boolean optional flag o set the primary image, defaults false to the product gallery
      */
-    private static function import_image($post_id, $image_url, $primary_flag = false)
+    public static function import_image($post_id, $image_url, $primary_flag = false)
     {
         $upload_dir = wp_upload_dir();
         $image_data = file_get_contents($image_url);
@@ -275,9 +289,9 @@ class Import_Util
 
     /**
      * Fetches category id based on name. Creates a new one if not already existant
-     * 
+     *
      * @param string category name
-     * 
+     *
      * @return int id of category
      */
     private static function get_category_id($product_category)
@@ -293,10 +307,10 @@ class Import_Util
 
     /**
      * Fetches subcategory id based on name. Creates a new one if not already existant
-     * 
+     *
      * @param string parent category name
      * @param string subcategory name
-     * 
+     *
      * @return int id of subcategory
      */
     private static function get_subcategory_id($parent_category, $product_subcategory)

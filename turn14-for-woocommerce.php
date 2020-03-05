@@ -48,9 +48,9 @@ class Turn14_For_WooCommerce
     public function init()
     {
 
-        // if (!class_exists('WC_Integration')) {
-        //     return;
-        // }
+        if (!class_exists('WC_Integration')) {
+            return;
+        }
 
         //load required classes
         require_once 'includes/class-dashboard-settings.php';
