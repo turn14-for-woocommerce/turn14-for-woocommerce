@@ -149,17 +149,23 @@ class Import_Util
                     if ($content != null && $image_links != null) {
                         if ($content == 'Photo - Primary') {
                             foreach ($image_links as $image_link) {
-                                // only upload if its big
-                                if ($image_link['size'] == 'L') {
-                                    self::import_image($post_id, $image_link['url'], true);
-                                    break;
+                                $image_url = $image_link['url'];
+                                if ($image_url != null) {
+                                    // only upload if its big
+                                    if ($image_link['size'] == 'L') {
+                                        self::import_image($post_id, $image_url, true);
+                                        break;
+                                    }
                                 }
                             }
                         } else {
                             foreach ($image_links as $image_link) {
-                                if ($image_link['size'] == 'L') {
-                                    self::import_image($post_id, $image_link['url']);
-                                    break;
+                                $image_url = $image_link['url'];
+                                if ($image_url != null) {
+                                    if ($image_link['size'] == 'L') {
+                                        self::import_image($post_id, $image_url);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -240,7 +246,6 @@ class Import_Util
         update_post_meta($post_id, '_backorders', 'notify');
         wc_update_product_stock($post_id, $total_stock, 'set');
         wc_update_product_stock_status($post_id, 'instock');
-        
     }
 
     /**
@@ -285,48 +290,5 @@ class Import_Util
             $attach_id_array .= ','.$attach_id;
             update_post_meta($post_id, '_product_image_gallery', $attach_id_array);
         }
-    }
-
-    /**
-     * Fetches category id based on name. Creates a new one if not already existant
-     *
-     * @param string category name
-     *
-     * @return int id of category
-     */
-    private static function get_category_id($product_category)
-    {
-        if (!term_exists($product_category) && $product_category != null) {
-            $term = wp_insert_term($product_category, 'product_cat');
-            return $term['term_id'];
-        }
-
-        $term = get_term_by('name', $product_category, 'product_cat');
-        return $term->term_id;
-    }
-
-    /**
-     * Fetches subcategory id based on name. Creates a new one if not already existant
-     *
-     * @param string parent category name
-     * @param string subcategory name
-     *
-     * @return int id of subcategory
-     */
-    private static function get_subcategory_id($parent_category, $product_subcategory)
-    {
-        if (!term_exists($product_subcategory) && $product_subcategory != null) {
-            $term = wp_insert_term(
-                $product_subcategory,
-                'product_cat',
-                array(
-                    'parent' => $parent_category
-                )
-            );
-            return $term['term_id'];
-        }
-
-        $term = get_term_by('name', $product_subcategory, 'product_cat');
-        return $term->term_id;
     }
 }

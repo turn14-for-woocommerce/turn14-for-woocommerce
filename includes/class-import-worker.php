@@ -51,14 +51,14 @@ class Import_Worker
         $turn14_items = $this->turn14_rest_client->get_items($page_number);
         if ($turn14_items != null) {
             $total_pages = $turn14_items['meta']['total_pages'];
-            if ($page_number == 1) {
-                $this->emailer->send_admin_email('Turn14 Product Import Starting', 'The Turn14 product import process has started!'
-                . ' There are a lot of products to import! We will send you a another email letting you know we have finsihed...');
-                for ($i = 2; $i <= $total_pages; $i++) {
-                    wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
-                    spawn_cron();
-                }
-            }
+            // if ($page_number == 1) {
+            //     $this->emailer->send_admin_email('Turn14 Product Import Starting', 'The Turn14 product import process has started!'
+            //     . ' There are a lot of products to import! We will send you a another email letting you know we have finsihed...');
+            //     for ($i = 2; $i <= $total_pages; $i++) {
+            //         wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => $i));
+            //         spawn_cron();
+            //     }
+            // }
             $turn14_items = $turn14_items['data'];
             if (!empty($turn14_items)) {
                 $this->import_service->import_products($turn14_items);
@@ -165,14 +165,14 @@ class Import_Worker
         $turn14_items = $this->turn14_rest_client->get_updated_items($page_number);
         if ($turn14_items != null) {
             $total_pages = $turn14_items['meta']['total_pages'];
-            if ($page_number == 1) {
-                $this->emailer->send_admin_email('Turn14 Product Update Starting', 'The Turn14 product update process has started!'
-                . ' There are a lot of products to update! We will send you a another email letting you know we have finsihed...');
-                for ($i = 2; $i <= $total_pages; $i++) {
-                    wp_schedule_single_event(time(), 'worker_update_products_hook', array('page_number' => $i));
-                    spawn_cron();
-                }
-            }
+            // if ($page_number == 1) {
+            //     $this->emailer->send_admin_email('Turn14 Product Update Starting', 'The Turn14 product update process has started!'
+            //     . ' There are a lot of products to update! We will send you a another email letting you know we have finsihed...');
+            //     for ($i = 2; $i <= $total_pages; $i++) {
+            //         wp_schedule_single_event(time(), 'worker_update_products_hook', array('page_number' => $i));
+            //         spawn_cron();
+            //     }
+            // }
             $turn14_items = $turn14_items['data'];
             if (!empty($turn14_items)) {
                 $this->import_service->import_products($turn14_items);
