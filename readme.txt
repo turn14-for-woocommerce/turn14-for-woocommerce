@@ -19,3 +19,6 @@ Integrate Turn14 with WooCommerce
 
 = 0.1.0 =
 * Milestone 1 release
+= 0.1.1 =
+* Performance increases
+* Bug fixes
