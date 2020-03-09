@@ -46,7 +46,7 @@ class Product_Mapper_Service_Impl implements Product_Mapper_Service
                     $this->product = new WC_Product_Simple();
                 }
         
-                $this->map_attribute('tun14_id', $item['id'], false);
+                $this->map_attribute('turn14_id', $item['id'], false);
                 $this->product->set_name($item_attributes['product_name']);
                 $this->product->set_status('publish');
                 $this->product->set_catalog_visibility('visible');
@@ -219,36 +219,37 @@ class Product_Mapper_Service_Impl implements Product_Mapper_Service
      */
     private function map_image($image_url, $primary_flag = false)
     {
-        // TODO: check if image already exists
-        $upload_dir = wp_upload_dir();
-        $image_data = file_get_contents($image_url);
-        $filename = basename($image_url);
-        if (wp_mkdir_p($upload_dir['path'])) {
-            $file = $upload_dir['path'] . '/' . $filename;
-        } else {
-            $file = $upload_dir['basedir'] . '/' . $filename;
-        }
-                          
-        file_put_contents($file, $image_data);
-                          
-        $wp_filetype = wp_check_filetype($filename, null);
-                          
-        $attachment = array(
-                            'post_mime_type' => $wp_filetype['type'],
-                            'post_title' => sanitize_file_name($filename),
-                            'post_content' => '',
-                            'post_status' => 'inherit'
-                          );
-                          
-        $attach_id = wp_insert_attachment($attachment, $file);
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-        $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-        wp_update_attachment_metadata($attach_id, $attach_data);
-
-        if ($primary_flag) {
-            $this->product->set_image_id($attach_id);
-        } else {
-            array_push($this->product_gallery_images, $attach_id);
+        if ($image_url != null) {
+            $upload_dir = wp_upload_dir();
+            $image_data = file_get_contents($image_url);
+            $filename = basename($image_url);
+            if (wp_mkdir_p($upload_dir['path'])) {
+                $file = $upload_dir['path'] . '/' . $filename;
+            } else {
+                $file = $upload_dir['basedir'] . '/' . $filename;
+            }
+                              
+            file_put_contents($file, $image_data);
+                              
+            $wp_filetype = wp_check_filetype($filename, null);
+                              
+            $attachment = array(
+                                'post_mime_type' => $wp_filetype['type'],
+                                'post_title' => sanitize_file_name($filename),
+                                'post_content' => '',
+                                'post_status' => 'inherit'
+                              );
+                              
+            $attach_id = wp_insert_attachment($attachment, $file);
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+            $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+            wp_update_attachment_metadata($attach_id, $attach_data);
+    
+            if ($primary_flag) {
+                $this->product->set_image_id($attach_id);
+            } else {
+                array_push($this->product_gallery_images, $attach_id);
+            }
         }
     }
 

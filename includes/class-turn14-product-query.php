@@ -14,16 +14,9 @@ if (! defined('ABSPATH')) {
  */
 class Turn14_Product_Query
 {
-    const PRODUCT_BY_ID_QUERY = "SELECT DISTINCT post_id FROM `wp_postmeta`"
-    . " WHERE meta_key = '_product_attributes'"
-    . " AND meta_value LIKE '%turn14_id%'"
-    . " AND meta_value LIKE '%%%s%%'";
-
-    const ALL_PRODUCTS_QUERY = "SELECT DISTINCT post_id FROM `wp_postmeta`"
-    . " WHERE meta_key = '_product_attributes'"
-    . " AND meta_value LIKE '%turn14_id%'";
-
     private $db;
+    private $all_products_query;
+    private $products_by_id_query;
     
     /**
      * Default Constructor
@@ -31,13 +24,20 @@ class Turn14_Product_Query
     public function __construct()
     {
         $this->db = $GLOBALS['wpdb'];
+        $this->all_products_query = "SELECT DISTINCT post_id FROM {$this->db->postmeta}"
+        . " WHERE meta_key = '_product_attributes'"
+        . " AND meta_value LIKE '%turn14_id%'";
+        $this->products_by_id_query = "SELECT DISTINCT post_id FROM {$this->db->postmeta}"
+        . " WHERE meta_key = '_product_attributes'"
+        . " AND meta_value LIKE '%turn14_id%'"
+        . " AND meta_value LIKE '%%%s%%'";
     }
 
     /**
-     * Gets product(post) id based on the turn14 id 
-     * 
+     * Gets product(post) id based on the turn14 id
+     *
      * @param int turn14 id of the product(post)
-     * 
+     *
      * @return int product(post) id
      */
     public function get_product_id_by_turn14_id($turn14_id)
@@ -45,7 +45,7 @@ class Turn14_Product_Query
         $turn14_id = '"' . $turn14_id . '"';
         $product = $this->db->get_results(
             $this->db->prepare(
-                self::PRODUCT_BY_ID_QUERY,
+                $this->products_by_id_query,
                 $turn14_id
             )
         )[0];
@@ -54,14 +54,16 @@ class Turn14_Product_Query
     }
 
     /**
-     * Gets all turn14 product(post) ids  
-     * 
+     * Gets all turn14 product(post) ids
+     *
      * @return array product(post) ids
      */
     public function get_all_turn14_products()
     {
         $products = $this->db->get_results(
-            $this->db->prepare(self::ALL_PRODUCTS_QUERY)
+            $this->db->prepare(
+                $this->all_products_query
+            )
         );
 
         return $products;

@@ -1,12 +1,12 @@
 <?php
 /**
  * Turn14 for WooCommerce
- * 
+ *
  * @package
- * @version: 0.1.0
+ * @version: 0.1.1
  * @author Sam Hall https://github.com/hallsamuel90
  *
- * 
+ *
  * @wordpress-plugin
  * Plugin Name: Turn14 for WooCommerce
  * Plugin URI:
@@ -47,7 +47,6 @@ class Turn14_For_WooCommerce
      */
     public function init()
     {
-
         if (!class_exists('WC_Integration')) {
             return;
         }
@@ -62,7 +61,6 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-turn14-rest-client.php';
         require_once 'includes/interface-import-service.php';
         require_once 'includes/class-import-service-impl.php';
-        require_once 'includes/class-import-util.php';
         require_once 'includes/class-import-worker.php';
         require_once 'includes/class-turn14-product-query.php';
         require_once 'includes/class-admin-emailer.php';

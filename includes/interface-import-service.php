@@ -1,7 +1,7 @@
 <?php
 /**
  * Import Service Interface
- * 
+ *
  * @author Sam Hall https://github.com/hallsamuel90
  */
 
@@ -16,18 +16,17 @@ interface Import_Service
 {
     /**
      * Imports full Turn14 products into WooCommerce
-     * 
+     *
      * @param array of turn14 products
-     * 
+     *
      */
     public function import_products($turn14_items);
 
     /**
-     * Imports full Turn14 products into WooCommerce
-     * 
+     * Deletes all Turn14 products
+     *
      * @param array of turn14 products
-     * 
+     *
      */
     public function delete_products_all();
-
 }

@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Class Interface Import Service Implementation for Turn14 into WooCommerce
+ * Class Import Service Implementation for Turn14 into WooCommerce
  */
 class Import_Service_Impl implements Import_Service
 {
@@ -36,22 +36,18 @@ class Import_Service_Impl implements Import_Service
                     $product = $this->product_mapper->map_product($item);
                     $product->save();
                 }
-                // break; //TODO: remove debug
             }
         }
     }
 
     public function delete_products_all()
     {
-        // $products = $this->turn14_product_query->get_all_turn14_products();
-        $products = wc_get_products(array(
-                'limit' => -1,
-            ));
+        $products = $this->turn14_product_query->get_all_turn14_products();
+        
         if (!empty($products)) {
             foreach ($products as $product) {
-                $product->delete(true);
-                // $post_id = $product->post_id;
-                    // wp_delete_post($post_id, true);
+                $post_id = $product->post_id;
+                wp_delete_post($post_id, true);
             }
         }
     }
