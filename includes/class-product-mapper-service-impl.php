@@ -19,16 +19,18 @@ class Product_Mapper_Service_Impl implements Product_Mapper_Service
     private $product_categories;
     private $product_gallery_images;
     private $turn14_rest_client;
+    private $turn14_product_query;
 
     /**
      * Default Constructor
      */
-    public function __construct($rest_client)
+    public function __construct($rest_client, $product_query)
     {
         $this->product_attributes = array();
         $this->product_categories = array();
         $this->product_gallery_images = array();
         $this->turn14_rest_client = $rest_client;
+        $this->turn14_product_query = $product_query;
     }
 
     /**
@@ -42,27 +44,31 @@ class Product_Mapper_Service_Impl implements Product_Mapper_Service
             $item_attributes = $item['attributes'];
             if ($item_attributes != null) {
                 $this->product = wc_get_products(array('sku' => $item_attributes['mfr_part_number']))[0];
-                if (!$this->product) {
+                if ($this->product != null) {
+                    $this->product_attributes = $this->product->get_attributes();
+                    $this->product_categories = $this->product->get_category_ids();
+                    $this->product_gallery_images = $this->product->get_gallery_image_ids();
+                } else {
                     $this->product = new WC_Product_Simple();
+                    $this->map_attribute('turn14_id', $item['id'], false);
+                    $this->product->set_name($item_attributes['product_name']);
+                    $this->product->set_status('publish');
+                    $this->product->set_catalog_visibility('visible');
+                    $this->product->set_short_description($item_attributes['part_description']);
+                    $this->map_image($item_attributes['thumbnail'], true);
+                    $this->product->set_sku($item_attributes['mfr_part_number']);
+                    $this->map_category($item_attributes['category']);
+                    $this->map_category($item_attributes['brand']);
+                    $this->map_subcategory($item_attributes['category'], $item_attributes['subcategory']);
+                    $dimensions = $item_attributes['dimensions'][0];
+                    if ($dimensions != null) {
+                        $this->product->set_weight($dimensions['weight']);
+                        $this->product->set_length($dimensions['length']);
+                        $this->product->set_width($dimensions['width']);
+                        $this->product->set_height($dimensions['height']);
+                    }
                 }
-        
-                $this->map_attribute('turn14_id', $item['id'], false);
-                $this->product->set_name($item_attributes['product_name']);
-                $this->product->set_status('publish');
-                $this->product->set_catalog_visibility('visible');
-                $this->product->set_short_description($item_attributes['part_description']);
-                $this->map_image($item_attributes['thumbnail'], true);
-                $this->product->set_sku($item_attributes['mfr_part_number']);
-                $this->map_category($item_attributes['category']);
-                $this->map_category($item_attributes['brand']);
-                $this->map_subcategory($item_attributes['category'], $item_attributes['subcategory']);
-                $dimensions = $item_attributes['dimensions'][0];
-                if ($dimensions != null) {
-                    $this->product->set_weight($dimensions['weight']);
-                    $this->product->set_length($dimensions['length']);
-                    $this->product->set_width($dimensions['width']);
-                    $this->product->set_height($dimensions['height']);
-                }
+
                 $this->map_media($item);
                 $this->map_pricing($item);
                 $this->map_inventory($item);
@@ -220,35 +226,37 @@ class Product_Mapper_Service_Impl implements Product_Mapper_Service
     private function map_image($image_url, $primary_flag = false)
     {
         if ($image_url != null) {
-            $upload_dir = wp_upload_dir();
-            $image_data = file_get_contents($image_url);
             $filename = basename($image_url);
-            if (wp_mkdir_p($upload_dir['path'])) {
-                $file = $upload_dir['path'] . '/' . $filename;
-            } else {
-                $file = $upload_dir['basedir'] . '/' . $filename;
+            $image_id = $this->turn14_product_query->get_image_id_by_file_name($filename);
+            if ($image_id == null) {
+                $upload_dir = wp_upload_dir();
+                $image_data = file_get_contents($image_url);
+                if (wp_mkdir_p($upload_dir['path'])) {
+                    $file = $upload_dir['path'] . '/' . $filename;
+                } else {
+                    $file = $upload_dir['basedir'] . '/' . $filename;
+                }
+                                  
+                file_put_contents($file, $image_data);
+                                  
+                $wp_filetype = wp_check_filetype($filename, null);
+                                  
+                $attachment = array(
+                                    'post_mime_type' => $wp_filetype['type'],
+                                    'post_title' => sanitize_file_name($filename),
+                                    'post_content' => '',
+                                    'post_status' => 'inherit'
+                                  );
+                                  
+                $image_id = wp_insert_attachment($attachment, $file);
+                require_once(ABSPATH . 'wp-admin/includes/image.php');
+                $attach_data = wp_generate_attachment_metadata($image_id, $file);
+                wp_update_attachment_metadata($image_id, $attach_data);
             }
-                              
-            file_put_contents($file, $image_data);
-                              
-            $wp_filetype = wp_check_filetype($filename, null);
-                              
-            $attachment = array(
-                                'post_mime_type' => $wp_filetype['type'],
-                                'post_title' => sanitize_file_name($filename),
-                                'post_content' => '',
-                                'post_status' => 'inherit'
-                              );
-                              
-            $attach_id = wp_insert_attachment($attachment, $file);
-            require_once(ABSPATH . 'wp-admin/includes/image.php');
-            $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-            wp_update_attachment_metadata($attach_id, $attach_data);
-    
             if ($primary_flag) {
-                $this->product->set_image_id($attach_id);
+                $this->product->set_image_id($image_id);
             } else {
-                array_push($this->product_gallery_images, $attach_id);
+                array_push($this->product_gallery_images, $image_id);
             }
         }
     }

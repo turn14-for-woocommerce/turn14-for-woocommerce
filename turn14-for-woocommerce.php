@@ -29,7 +29,7 @@ if (! defined('PF_PLUGIN_FILE')) {
  */
 class Turn14_For_WooCommerce
 {
-    const VERSION = '0.1.0';
+    const VERSION = '0.1.1';
 
     private $admin;
     

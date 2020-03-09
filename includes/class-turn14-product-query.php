@@ -17,6 +17,7 @@ class Turn14_Product_Query
     private $db;
     private $all_products_query;
     private $products_by_id_query;
+    private $image_by_file_name_query;
     
     /**
      * Default Constructor
@@ -31,6 +32,8 @@ class Turn14_Product_Query
         . " WHERE meta_key = '_product_attributes'"
         . " AND meta_value LIKE '%turn14_id%'"
         . " AND meta_value LIKE '%%%s%%'";
+        $this->image_by_file_name_query = "SELECT DISTINCT post_id FROM {$this->db->postmeta}"
+        . " WHERE meta_value LIKE '%%%s%%'";
     }
 
     /**
@@ -67,5 +70,24 @@ class Turn14_Product_Query
         );
 
         return $products;
+    }
+
+    /**
+     * Gets product(post) id based on the turn14 id
+     *
+     * @param int turn14 id of the product(post)
+     *
+     * @return int product(post) id
+     */
+    public function get_image_id_by_file_name($filename)
+    {
+        $image = $this->db->get_results(
+            $this->db->prepare(
+                $this->image_by_file_name_query,
+                $filename
+            )
+        )[0];
+
+        return $image->post_id;
     }
 }

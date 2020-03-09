@@ -25,7 +25,7 @@ class Import_Service_Impl implements Import_Service
     {
         $this->turn14_product_query = new Turn14_Product_Query();
         $this->turn14_rest_client = new Turn14_Rest_Client();
-        $this->product_mapper = new Product_Mapper_Service_Impl($this->turn14_rest_client);
+        $this->product_mapper = new Product_Mapper_Service_Impl($this->turn14_rest_client, $this->turn14_product_query);
     }
 
     public function import_products($turn14_items)
@@ -34,7 +34,11 @@ class Import_Service_Impl implements Import_Service
             foreach ($turn14_items as $item) {
                 if ($item != null) {
                     $product = $this->product_mapper->map_product($item);
-                    $product->save();
+                    if (!is_wp_error($product)) {
+                        $product->save();
+                    } else {
+                        error_log($product->get_error_message());
+                    }
                 }
             }
         }
