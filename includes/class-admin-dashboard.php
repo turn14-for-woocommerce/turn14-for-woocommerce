@@ -50,7 +50,10 @@ class Admin_Dashboard
     private function render_dashboard()
     {
         Dashboard_View_Config::load_template('header', array('tabs' => Dashboard_View_Config::dashboard_tabs()));
-        Dashboard_View_Config::load_template('import-all-products');
+        // Dashboard_View_Config::load_template('import-all-products');
+        // Dashboard_View_Config::load_template('brands-table');
+        $brands_table = new Brands_Table();
+        $brands_table->display();
         Dashboard_View_Config::load_template('footer');
     }
 }

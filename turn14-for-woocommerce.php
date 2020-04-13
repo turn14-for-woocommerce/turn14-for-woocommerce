@@ -56,6 +56,7 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-dashboard-view-config.php';
         require_once 'includes/class-admin.php';
         require_once 'includes/class-admin-dashboard.php';
+        require_once 'includes/class-brands-table.php';
         require_once 'includes/class-admin-settings.php';
         require_once 'includes/class-admin-controller.php';
         require_once 'includes/class-turn14-rest-client.php';
