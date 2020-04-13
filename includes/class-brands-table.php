@@ -65,12 +65,14 @@ class Brands_Table extends WP_List_Table
                 'brand_id' => '243',
                 'brand_name' => 'ARB',
                 'active' => 'true',
+                'first_imported' => '2020/04/12',
                 'last_updated' => '2020/04/12'
             ),
             array(
                 'brand_id' => '43',
                 'brand_name' => 'Desert Racing Designs',
                 'active' => 'true',
+                'first_imported' => '2020/03/31',
                 'last_updated' => '2020/04/11'
             )
         );
@@ -86,6 +88,7 @@ class Brands_Table extends WP_List_Table
             'cb' => '<input type="checkbox" />',
             'brand_name' => 'Brand Name',
             'active' => 'Active', 
+            'first_imported' => 'First Imported',
             'last_updated' => 'Last Updated',
         );
         return $columns;
@@ -153,9 +156,9 @@ class Brands_Table extends WP_List_Table
     {
         $actions = array(
             'activate'      => sprintf('<a href="?page=%s&action=%s&book=%s">Activate</a>',$_REQUEST['page'],'activate',$item['brand_id']),
-            'deactivate'    => sprintf('<a href="?page=%s&action=%s&book=%s">Deactivate</a>',$_REQUEST['page'],'deactivate',$item['brand_id']),
+            'deactivate'    => sprintf('<a class=deactivate href="?page=%s&action=%s&book=%s">Deactivate</a>',$_REQUEST['page'],'deactivate',$item['brand_id']),
         );
-        return sprintf('%s %s', $item['brand_name'], $this->row_actions($actions));
+        return sprintf('<p class=row-title >%s</p> %s', $item['brand_name'], $this->row_actions($actions));
     }
 
     /** 
@@ -166,6 +169,16 @@ class Brands_Table extends WP_List_Table
     function column_active($item)
     {
         return sprintf($item['active']);
+    }
+
+    /** 
+    * Render first imported
+    * * @param array $item 
+    * * @return string 
+    */
+    function column_first_imported($item)
+    {
+        return sprintf($item['first_imported']);
     }
 
     /** 

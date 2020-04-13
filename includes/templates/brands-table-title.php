@@ -1,0 +1,1 @@
+<h1 class="wp-heading-inline">Brand Manager</h1>
