@@ -27,7 +27,7 @@ class Admin_Controller
         add_action('wp_ajax_delete_all_products', array($this, 'delete_all_products' ));
         add_action('wp_ajax_nopriv_delete_all_products', array($this, 'delete_all_products' ));
 
-        $this->worker = new Import_Worker();
+        // $this->worker = new Import_Worker();
         // $this->update_products();
     }
 

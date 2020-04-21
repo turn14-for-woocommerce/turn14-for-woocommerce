@@ -376,4 +376,34 @@ class Turn14_Rest_Client
             $this->authenticate();
         }
     }
+
+    /**
+     * Verifies credentials
+     *
+     * @param string client id
+     * @param string client secret
+     *
+     * @return boolean true if valid
+     */
+    public function verify($client_id, $client_secret)
+    {
+        $pload = array(
+            'grant_type'=>'client_credentials',
+            'client_id'=>$client_id,
+            'client_secret'=>$client_secret
+        );
+
+        $response = wp_remote_post(
+            self::BASE_URL . self::TOKEN_RESOURCE,
+            array(
+                'body' => $pload
+            )
+        );
+
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+           return true;
+        }
+        return false;
+    }
 }

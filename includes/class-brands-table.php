@@ -55,11 +55,12 @@ class Brands_Table extends WP_List_Table
     }
 
     /**
-     * Retrieve records data from the database
+     * Fetch brands from the brand service
      */
     public static function get_table_data()
     {
-        
+        // user users-service client to authenticate
+        // and brands-service client to fetch brands 
         return array(
             array(
                 'brand_id' => '243',
@@ -123,7 +124,7 @@ class Brands_Table extends WP_List_Table
      */
     public function no_items()
     {
-        _e('No brands found.', 'bx');
+        _e('No brand data could be displayed. Make sure you have set your API keys in the Settings tab!', 'bx');
     }
 
     /** 
