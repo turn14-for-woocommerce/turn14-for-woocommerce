@@ -23,7 +23,7 @@ class Import_Worker
      */
     public function __construct()
     {
-        $this->turn14_rest_client = new Turn14_Rest_Client();
+        $this->turn14_rest_client = new Turn14_Client();
         $this->import_service = new Import_Service_Impl();
         $this->emailer = new Admin_Emailer();
         

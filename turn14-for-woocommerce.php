@@ -59,16 +59,9 @@ class Turn14_For_WooCommerce
         require_once 'includes/class-brands-table.php';
         require_once 'includes/class-admin-settings.php';
         require_once 'includes/class-admin-controller.php';
-        require_once 'includes/class-turn14-rest-client.php';
+        require_once 'includes/class-turn14-client.php';
         require_once 'includes/class-wc-client.php';
-        // require_once 'includes/interface-import-service.php';
-        // require_once 'includes/class-import-service-impl.php';
-        // require_once 'includes/class-import-worker.php';
-        // require_once 'includes/class-turn14-product-query.php';
-        // require_once 'includes/class-admin-emailer.php';
-        // require_once 'includes/interface-product-mapper-service.php';
-        // require_once 'includes/class-product-mapper-service-impl.php';
-        
+        require_once 'includes/class-service-client.php';
         $this->admin = new Admin();
     }
 }

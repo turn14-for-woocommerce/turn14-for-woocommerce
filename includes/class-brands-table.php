@@ -14,16 +14,19 @@ if (!class_exists('WP_List_Table')) {
  * Create a new table class that will extend the WP_List_Table 
  */
 class Brands_Table extends WP_List_Table
- 
 {
+    private $service_client;
+
     public function __construct()
     {
+        $this->service_client = new Service_Client();
+        $this->prepare_items();
         parent::__construct(array(
-            'singular' => 'singular_form',
-            'plural' => 'plural_form',
+            'singular' => 'brand',
+            'plural' => 'brands',
             'ajax' => true
         ));
-        $this->prepare_items();
+        
     }
 
     /** 
@@ -34,7 +37,7 @@ class Brands_Table extends WP_List_Table
         $columns = $this->get_columns();
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
-
+        $this->process_bulk_action();
         $data = $this->get_table_data();
         usort( $data, array( &$this, 'sort_data' ) );
 
@@ -50,33 +53,28 @@ class Brands_Table extends WP_List_Table
         $data = array_slice($data,(($currentPage-1)*$perPage),$perPage);
 
         $this->_column_headers = array($columns, $hidden, $sortable);
-        // $this->process_bulk_action();
         $this->items = $data;
     }
 
     /**
      * Fetch brands from the brand service
+     * 
+     * @param boolean pull fresh or accept cached data, defaults to false
      */
-    public static function get_table_data()
+    public function get_table_data($fresh = false)
     {
-        // user users-service client to authenticate
-        // and brands-service client to fetch brands 
-        return array(
-            array(
-                'brand_id' => '243',
-                'brand_name' => 'ARB',
-                'active' => 'true',
-                'first_imported' => '2020/04/12',
-                'last_updated' => '2020/04/12'
-            ),
-            array(
-                'brand_id' => '43',
-                'brand_name' => 'Desert Racing Designs',
-                'active' => 'true',
-                'first_imported' => '2020/03/31',
-                'last_updated' => '2020/04/11'
-            )
-        );
+        $user_id = get_transient('user_id');
+        if ($user_id == null){
+            $user_id = $this->service_client->login(home_url(), get_option('turn14_settings')['turn14_api_secret']);
+            set_transient('user_id', $user_id, 60*60);
+        }
+        $brands = get_transient('brands');
+        if($brands == null || $fresh){
+            $brands = $this->service_client->get_brands($user_id);
+            set_transient('brands', $brands, 60*60);
+        }
+        // TODO error handling
+        return $brands;
     }
 
     /** 
@@ -89,7 +87,7 @@ class Brands_Table extends WP_List_Table
             'cb' => '<input type="checkbox" />',
             'brand_name' => 'Brand Name',
             'active' => 'Active', 
-            'first_imported' => 'First Imported',
+            'first_published' => 'First Published',
             'last_updated' => 'Last Updated',
         );
         return $columns;
@@ -128,24 +126,13 @@ class Brands_Table extends WP_List_Table
     }
 
     /** 
-     * Returns the count of records in the database. 
-     * @return null|string 
-     */
-    public static function record_count()
-    {
-        // global $wpdb;
-        // $sql = "SELECT COUNT(*) FROM custom_records";
-        return '1';
-    }
-
-    /** 
     * Render the bulk edit checkbox 
     * * @param array $item 
     * * @return string 
     */
     function column_cb($item)
     {
-        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['brand_id']);
+        return sprintf('<input type="checkbox" name="bulk-action[]" value="%s" />', $item['_id']);
     }
 
     /** 
@@ -156,10 +143,10 @@ class Brands_Table extends WP_List_Table
     function column_brand_name($item)
     {
         $actions = array(
-            'activate'      => sprintf('<a href="?page=%s&action=%s&book=%s">Activate</a>',$_REQUEST['page'],'activate',$item['brand_id']),
-            'deactivate'    => sprintf('<a class=deactivate href="?page=%s&action=%s&book=%s">Deactivate</a>',$_REQUEST['page'],'deactivate',$item['brand_id']),
+            'activate'      => sprintf('<a href="?page=%s&action=%s&id=%s">Activate</a>',$_REQUEST['page'],'activateBrand',$item['_id']),
+            'deactivate'    => sprintf('<a class=deactivate href="?page=%s&action=%s&id=%s">Deactivate</a>',$_REQUEST['page'],'deactivateBrand',$item['_id']),
         );
-        return sprintf('<p class=row-title >%s</p> %s', $item['brand_name'], $this->row_actions($actions));
+        return sprintf('<p class=row-title >%s</p> %s', $item['brandName'], $this->row_actions($actions));
     }
 
     /** 
@@ -169,7 +156,8 @@ class Brands_Table extends WP_List_Table
     */
     function column_active($item)
     {
-        return sprintf($item['active']);
+        // return sprintf($item['active']);
+        return sprintf( $item['active'] ? 'true' : 'false');
     }
 
     /** 
@@ -177,9 +165,10 @@ class Brands_Table extends WP_List_Table
     * * @param array $item 
     * * @return string 
     */
-    function column_first_imported($item)
+    function column_first_published($item)
     {
-        return sprintf($item['first_imported']);
+        $date = date('d-M-Y', strtotime($item['firstPublished']));
+        return sprintf($date);
     }
 
     /** 
@@ -189,7 +178,8 @@ class Brands_Table extends WP_List_Table
     */
     function column_last_updated($item)
     {
-        return sprintf($item['last_updated']);
+        $date = date('d-M-Y', strtotime($item['lastUpdated']));
+        return sprintf($date);
     }
 
     /** 
@@ -200,8 +190,21 @@ class Brands_Table extends WP_List_Table
     {
         $actions = array(
             'bulk-activate' => 'Activate',
-            'buld-deactivate' => 'Deactivate'
+            'bulk-deactivate' => 'Deactivate'
         );
         return $actions;
+    }
+
+    public function process_bulk_action(){
+        $action = $this->current_action();
+        if('activateBrand' === $this->current_action()){
+            $id = $_REQUEST['id'];
+            $this->service_client->activate($id, true);
+            $brands = $this->get_table_data(true);
+        } else if('deactivateBrand' === $this->current_action()){
+            $id = $_REQUEST['id'];
+            $this->service_client->activate($id, false);
+            $brands = $this->get_table_data(true);
+        }
     }
 }

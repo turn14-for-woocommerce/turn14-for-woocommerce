@@ -24,7 +24,7 @@ class Import_Service_Impl implements Import_Service
     public function __construct()
     {
         $this->turn14_product_query = new Turn14_Product_Query();
-        $this->turn14_rest_client = new Turn14_Rest_Client();
+        $this->turn14_rest_client = new Turn14_Client();
         $this->product_mapper = new Product_Mapper_Service_Impl($this->turn14_rest_client, $this->turn14_product_query);
     }
 

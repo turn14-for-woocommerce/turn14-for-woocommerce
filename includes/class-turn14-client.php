@@ -1,6 +1,6 @@
 <?php
 /**
- * Turn14 Rest Client Class
+ * Turn14 Client Class
  *
  * @author Sam Hall https://github.com/hallsamuel90
  */
@@ -10,9 +10,9 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Class Turn14 Rest Client for communication with Turn14 API
+ * Class Turn14 Client for communication with Turn14 API
  */
-class Turn14_Rest_Client
+class Turn14_Client
 {
     const API_CLIENT = 'turn14_api_client_id';
     const API_SECRET = 'turn14_api_secret';

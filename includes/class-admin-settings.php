@@ -125,13 +125,13 @@ class Admin_Settings
 
     /**
      * Validation callback checks to see if api keys are valid. If keys are valid, the site is
-     * registered with the backend service and finally saved.
+     * registered with the backend service.
      * 
      * @param array $input
      */
     public function validation_callback($input)
     {
-        $turn14_client = new Turn14_Rest_Client();
+        $turn14_client = new Turn14_Client();
         $turn14_valid = $turn14_client->verify($input['turn14_api_client_id'], $input['turn14_api_secret']);
         if (!$turn14_valid){
             add_settings_error(
@@ -139,7 +139,7 @@ class Admin_Settings
                 esc_attr('settings_updated'),
                 '🔥 Invalid Turn14 Client ID and/or Client Secret'
             );
-            return;
+            return get_option('turn14_settings');
         }
         $wc_client = new WC_Client();
         $wc_valid = $wc_client->verify($input['wc_api_client_id'], $input['wc_api_secret']);
@@ -149,11 +149,44 @@ class Admin_Settings
                 esc_attr('settings_updated'),
                 '🔥 Invalid WC Client ID and/or Client Secret'
             );
-            return;
+            return get_option('turn14_settings');
         }
         // send to users service for registration
-        $url = home_url();
-        $email = get_bloginfo('admin_email');
+        if ($turn14_valid && $wc_valid) {
+            $service_client = new Service_Client();
+            $url = home_url();
+            $registration_body = array(
+                'user' => array(
+                    'email' => get_bloginfo('admin_email'),
+                    'username' => $url,
+                    'password' =>  $input['turn14_api_secret']
+                ),
+                'api' => array(
+                    'siteUrl' => $url,
+                    'turn14Keys' => array(
+                        'client' => $input['turn14_api_client_id'],
+                        'secret' => $input['turn14_api_secret']
+                    ),
+                    'wcKeys' => array(
+                        'client' => $input['wc_api_client_id'],
+                        'secret' => $input['wc_api_secret']
+                    )
+                )
+            );
+    
+            // TODO update instead of register?
+            $user_id = $service_client->register($registration_body);
+            if ($user_id != null){
+                set_transient('user_id', $user_id, 60*60);
+            } else {
+                add_settings_error(
+                    'turn14_settings_error',
+                    esc_attr('settings_updated'),
+                    '🔥 There was an error registering with the service. Please retry in a moment'
+                );
+                return get_option('turn14_settings');
+            }
+        }
 
         return $input;
     }

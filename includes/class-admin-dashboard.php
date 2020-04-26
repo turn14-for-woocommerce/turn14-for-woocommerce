@@ -54,6 +54,7 @@ class Admin_Dashboard
         Dashboard_View_Config::load_template('brands-table-title');
         $brands_table = new Brands_Table();
         $brands_table->display();
+        Dashboard_View_Config::load_template('brands-table-footer');
         Dashboard_View_Config::load_template('footer');
     }
 }
