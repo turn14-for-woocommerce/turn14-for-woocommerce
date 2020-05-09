@@ -34,20 +34,8 @@ class Admin
     public function register_admin()
     {
         add_action('admin_menu', array($this, 'register_admin_menu_page'));
-        add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_init', array('Admin_Settings', 'register_settings'));
         add_action('admin_enqueue_scripts', array( $this, 'register_scripts' ));
-    }
-
-    /**
-     * Registers settings
-     */
-    public function register_settings()
-    {
-        $options = Dashboard_Settings::dashboard_settings_group();
-        foreach ($options as $key=>$value) {
-            add_option($key, '');
-            register_setting('turn14_settings', $key, 'sanitize');
-        }
     }
 
     /**
