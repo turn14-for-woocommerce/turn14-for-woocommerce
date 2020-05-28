@@ -13,10 +13,17 @@ class Rest_Config
     private $db;
 
     /**
-     * 
+     *
      */
-    public function __construct($db){
+    public function __construct($db)
+    {
         $this->db = $db;
+    }
+
+    public function register_extended_api()
+    {
+        $this->register_brand_id_queryable();
+        $this->register_rest_attributes();
     }
 
     /**
@@ -26,6 +33,16 @@ class Rest_Config
     {
         add_action('rest_api_init', array($this, 'register_brand_id'));
         add_action('rest_api_init', array($this, 'register_ymm_fitment'));
+    }
+
+    public function register_brand_id_queryable()
+    {
+        add_action('pre_get_posts', function (WP_Query $query) {
+            if(isset($_GET['brand_id'])){
+                $query->set('meta_key', 'brand_id');
+                $query->set('meta_value', $_GET['brand_id']);
+            }
+        });
     }
 
     /**
@@ -45,7 +62,7 @@ class Rest_Config
 
     public function get_brand_id($object, $field_name)
     {
-        return get_post_meta( $object[ 'id' ], $field_name, true );
+        return get_post_meta($object['id'], $field_name, true);
     }
 
     public function set_brand_id($value, $object, $field_name)

@@ -71,7 +71,7 @@ class Turn14_For_WooCommerce
         $ymm_db = new Ymm_Db($ymm_config);
 
         $rest_config = new Rest_Config($ymm_db);
-        $rest_config->register_rest_attributes();
+        $rest_config->register_extended_api();
 
         $field_config = new Field_Config();
         $field_config->register_fields();
