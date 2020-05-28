@@ -68,7 +68,7 @@ class Service_Client
     public function login($username, $password)
     {
         $json_body = wp_json_encode(array(
-            'username' => $username,
+            'username' => "https://10.0.2.2/devsite", // TODO remove in production
             'password' => $password
         ));
         $response = wp_remote_post(

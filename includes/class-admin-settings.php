@@ -154,14 +154,15 @@ class Admin_Settings
         // send to users service for registration
         if ($turn14_valid && $wc_valid) {
             $service_client = new Service_Client();
-            $url = home_url();
+            // $url = home_url();
+            $url = 'https://10.0.2.2/devsite';
             $registration_body = array(
                 'user' => array(
                     'email' => get_bloginfo('admin_email'),
                     'username' => $url,
                     'password' =>  $input['turn14_api_secret']
                 ),
-                'api' => array(
+                'apiRegistration' => array(
                     'siteUrl' => $url,
                     'turn14Keys' => array(
                         'client' => $input['turn14_api_client_id'],
