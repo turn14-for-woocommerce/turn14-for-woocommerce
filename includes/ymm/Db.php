@@ -230,7 +230,7 @@ class Ymm_Db
         $values = explode(',', $line);
         
         if (count($values) != $numberOfFields){
-          throw new Exception();          
+          error_log('Could not save the ymm restriction. Must be in the correct format!');         
           return;          
         }
 

@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
  */
 class Service_Client
 {
-    const BASE_URL = 'http://localhost:8081';
+    const BASE_URL = 'http://206.189.190.203';
     const REGISTER_RESOURCE = '/users/register';
     const LOGIN_RESOURCE = '/users/login';
     const BRANDS_RESOURCE = '/brands/?userId=';
@@ -68,7 +68,7 @@ class Service_Client
     public function login($username, $password)
     {
         $json_body = wp_json_encode(array(
-            'username' => "https://10.0.2.2/devsite", // TODO remove in production
+            'username' => $username,
             'password' => $password
         ));
         $response = wp_remote_post(

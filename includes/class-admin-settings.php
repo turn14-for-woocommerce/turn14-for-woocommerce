@@ -154,8 +154,7 @@ class Admin_Settings
         // send to users service for registration
         if ($turn14_valid && $wc_valid) {
             $service_client = new Service_Client();
-            // $url = home_url();
-            $url = 'https://10.0.2.2/devsite';
+            $url = home_url();
             $registration_body = array(
                 'user' => array(
                     'email' => get_bloginfo('admin_email'),
@@ -175,7 +174,6 @@ class Admin_Settings
                 )
             );
     
-            // TODO update instead of register?
             $user_id = $service_client->register($registration_body);
             if ($user_id != null){
                 set_transient('user_id', $user_id, 60*60);
