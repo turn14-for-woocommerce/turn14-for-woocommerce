@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
  */
 class Service_Client
 {
-    const BASE_URL = 'http://localhost:8081';
+    const BASE_URL = 'http://206.189.190.203';
     const REGISTER_RESOURCE = '/users/register';
     const LOGIN_RESOURCE = '/users/login';
     const BRANDS_RESOURCE = '/brands/?userId=';

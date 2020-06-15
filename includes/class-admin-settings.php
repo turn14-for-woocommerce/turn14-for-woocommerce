@@ -161,7 +161,7 @@ class Admin_Settings
                     'username' => $url,
                     'password' =>  $input['turn14_api_secret']
                 ),
-                'api' => array(
+                'apiRegistration' => array(
                     'siteUrl' => $url,
                     'turn14Keys' => array(
                         'client' => $input['turn14_api_client_id'],
@@ -174,7 +174,6 @@ class Admin_Settings
                 )
             );
     
-            // TODO update instead of register?
             $user_id = $service_client->register($registration_body);
             if ($user_id != null){
                 set_transient('user_id', $user_id, 60*60);

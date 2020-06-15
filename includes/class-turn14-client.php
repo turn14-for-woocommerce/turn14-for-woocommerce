@@ -16,7 +16,7 @@ class Turn14_Client
 {
     const API_CLIENT = 'turn14_api_client_id';
     const API_SECRET = 'turn14_api_secret';
-    const BASE_URL = 'https://api.turn14.com';
+    const BASE_URL = 'https://apitest.turn14.com';
     const TOKEN_RESOURCE = '/v1/token';
     const ITEMS_RESOURCE = '/v1/items?page=';
     const UPDATED_ITEMS_RESOURCE = '/v1/items/updates?page=';
