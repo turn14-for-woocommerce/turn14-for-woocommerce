@@ -1,6 +1,6 @@
 <?php
 /**
- * Turn14 Rest Client Class
+ * Turn14 Client Class
  *
  * @author Sam Hall https://github.com/hallsamuel90
  */
@@ -10,13 +10,13 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Class Turn14 Rest Client for communication with Turn14 API
+ * Class Turn14 Client for communication with Turn14 API
  */
-class Turn14_Rest_Client
+class Turn14_Client
 {
     const API_CLIENT = 'turn14_api_client_id';
     const API_SECRET = 'turn14_api_secret';
-    const BASE_URL = 'https://api.turn14.com';
+    const BASE_URL = 'https://apitest.turn14.com';
     const TOKEN_RESOURCE = '/v1/token';
     const ITEMS_RESOURCE = '/v1/items?page=';
     const UPDATED_ITEMS_RESOURCE = '/v1/items/updates?page=';
@@ -375,5 +375,35 @@ class Turn14_Rest_Client
         } else {
             $this->authenticate();
         }
+    }
+
+    /**
+     * Verifies credentials
+     *
+     * @param string client id
+     * @param string client secret
+     *
+     * @return boolean true if valid
+     */
+    public function verify($client_id, $client_secret)
+    {
+        $pload = array(
+            'grant_type'=>'client_credentials',
+            'client_id'=>$client_id,
+            'client_secret'=>$client_secret
+        );
+
+        $response = wp_remote_post(
+            self::BASE_URL . self::TOKEN_RESOURCE,
+            array(
+                'body' => $pload
+            )
+        );
+
+        $response_code = $response['response']['code'];
+        if ($response_code == 200) {
+           return true;
+        }
+        return false;
     }
 }

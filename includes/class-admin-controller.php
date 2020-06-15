@@ -27,8 +27,8 @@ class Admin_Controller
         add_action('wp_ajax_delete_all_products', array($this, 'delete_all_products' ));
         add_action('wp_ajax_nopriv_delete_all_products', array($this, 'delete_all_products' ));
 
-        $this->worker = new Import_Worker();
-        $this->update_products();
+        // $this->worker = new Import_Worker();
+        // $this->update_products();
     }
 
     /**
@@ -38,8 +38,8 @@ class Admin_Controller
     {
         // wp_unschedule_hook('worker_import_products_hook');
         
-        wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => 1));
-        spawn_cron();
+        // wp_schedule_single_event(time(), 'worker_import_products_hook', array('page_number' => 1));
+        // spawn_cron();
         wp_send_json_success(
             array(
             'msg' => 'Importing all products in the background. This may take a while... We will email you when we are finished!'
@@ -64,8 +64,8 @@ class Admin_Controller
      */
     public function delete_all_products()
     {
-        wp_schedule_single_event(time(), 'worker_delete_all_hook');
-        spawn_cron();
+        // wp_schedule_single_event(time(), 'worker_delete_all_hook');
+        // spawn_cron();
         wp_send_json_success(
             array(
             'msg' => 'Deleting all products in the background. This may take a few minutes... We will email you when we are finished!')
